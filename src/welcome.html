@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to SNS Feed Text Extractor</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0a0a0a;
+      color: #e0e0e0;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Layout ──────────────────────────────────── */
+    .page {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 60px 24px 80px;
+    }
+
+    /* ── Hero ────────────────────────────────────── */
+    .hero {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .hero-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+      display: inline-block;
+      animation: fadeUp 0.6s ease-out;
+    }
+
+    .hero h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.5px;
+      margin-bottom: 12px;
+      animation: fadeUp 0.6s ease-out 0.1s both;
+    }
+
+    .hero p {
+      font-size: 15px;
+      color: #888;
+      line-height: 1.6;
+      animation: fadeUp 0.6s ease-out 0.2s both;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 6px 14px;
+      background: rgba(29, 155, 240, 0.12);
+      border: 1px solid rgba(29, 155, 240, 0.25);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #1d9bf0;
+      animation: fadeUp 0.6s ease-out 0.3s both;
+    }
+
+    /* ── Steps ───────────────────────────────────── */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 56px;
+    }
+
+    .step {
+      display: flex;
+      gap: 16px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      transition: border-color 0.2s;
+      animation: fadeUp 0.5s ease-out both;
+    }
+
+    .step:nth-child(1) { animation-delay: 0.3s; }
+    .step:nth-child(2) { animation-delay: 0.4s; }
+    .step:nth-child(3) { animation-delay: 0.5s; }
+
+    .step:hover {
+      border-color: rgba(29, 155, 240, 0.2);
+    }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(29, 155, 240, 0.15);
+      color: #1d9bf0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .step-content h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .step-content p {
+      font-size: 13px;
+      color: #888;
+      line-height: 1.5;
+    }
+
+    /* ── Platforms ────────────────────────────────── */
+    .platforms {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 56px;
+      animation: fadeUp 0.5s ease-out 0.6s both;
+    }
+
+    .platform-tag {
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #aaa;
+    }
+
+    /* ── Email Section ───────────────────────────── */
+    .email-section {
+      text-align: center;
+      padding: 40px 32px;
+      background: rgba(29, 155, 240, 0.04);
+      border: 1px solid rgba(29, 155, 240, 0.12);
+      border-radius: 16px;
+      margin-bottom: 40px;
+      animation: fadeUp 0.5s ease-out 0.7s both;
+    }
+
+    .email-section h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .email-section p {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .email-form {
+      display: flex;
+      gap: 8px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .email-input {
+      flex: 1;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .email-input::placeholder { color: #555; }
+    .email-input:focus { border-color: rgba(29, 155, 240, 0.5); }
+
+    .email-btn {
+      padding: 12px 24px;
+      background: #1d9bf0;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      white-space: nowrap;
+    }
+
+    .email-btn:hover { background: #1a8cd8; }
+    .email-btn:active { transform: scale(0.97); }
+    .email-btn:disabled {
+      background: #333;
+      color: #666;
+      cursor: not-allowed;
+    }
+
+    .email-msg {
+      margin-top: 12px;
+      font-size: 13px;
+      min-height: 20px;
+    }
+
+    .email-msg.success { color: #22c55e; }
+    .email-msg.error { color: #ef4444; }
+
+    .email-note {
+      margin-top: 16px;
+      font-size: 11px;
+      color: #555;
+    }
+
+    /* ── Footer ──────────────────────────────────── */
+    .footer {
+      text-align: center;
+      animation: fadeUp 0.5s ease-out 0.8s both;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      font-size: 12px;
+      color: #555;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: #1d9bf0; }
+
+    /* ── Animation ───────────────────────────────── */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ── Responsive ──────────────────────────────── */
+    @media (max-width: 480px) {
+      .page { padding: 40px 16px 60px; }
+      .hero h1 { font-size: 24px; }
+      .email-form { flex-direction: column; }
+      .platforms { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-icon">📋</div>
+      <h1>SNS Feed Text Extractor</h1>
+      <p>Extract clean text from social feeds in one click.<br>
+         Built for AI workflows — paste into ChatGPT, Claude, or any LLM.</p>
+      <span class="hero-badge">v1.4.0 · Free & Open</span>
+    </div>
+
+    <!-- How it works -->
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>Open any supported feed</h3>
+          <p>Navigate to X, Threads, Reddit, or Quora in your browser.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Click the extension icon</h3>
+          <p>The popup detects the current platform automatically. Adjust settings if needed.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>Extract & copy</h3>
+          <p>Hit "Extract" to pull @handle + text + timestamp. Copy to clipboard and paste into your AI tool.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Supported platforms -->
+    <div class="platforms">
+      <span class="platform-tag">𝕏 X / Twitter</span>
+      <span class="platform-tag">🧵 Threads</span>
+      <span class="platform-tag">🤖 Reddit</span>
+      <span class="platform-tag">❓ Quora</span>
+    </div>
+
+    <!-- Email signup -->
+    <div class="email-section">
+      <h2>Stay in the loop</h2>
+      <p>Get notified about new features, platform updates, and AI workflow tips.<br>
+         No spam — only meaningful updates.</p>
+      <div class="email-form">
+        <input type="email" class="email-input" id="email-input" placeholder="you@example.com" autocomplete="email">
+        <button class="email-btn" id="email-btn">Subscribe</button>
+      </div>
+      <div class="email-msg" id="email-msg"></div>
+      <div class="email-note">We respect your privacy. Unsubscribe anytime.</div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div class="footer-links">
+        <a href="https://ysajang.github.io/sns-feed-extractor/privacy" target="_blank">Privacy Policy</a>
+        <a href="https://github.com/ysajang/sns-feed-extractor/issues" target="_blank">Feedback</a>
+        <a href="https://github.com/ysajang/sns-feed-extractor" target="_blank">GitHub</a>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="welcome.js"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "SNS Feed Text Extractor",
+  "version": "1.5.0",
+  "description": "Extract clean text from X, Threads, Reddit & Quora feeds in one click. Built for AI workflows — paste into ChatGPT, Claude, or any LLM.",
+  "permissions": ["activeTab", "clipboardWrite", "storage"],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://x.com/*",
+        "https://twitter.com/*",
+        "https://www.threads.net/*",
+        "https://threads.net/*",
+        "https://www.threads.com/*",
+        "https://threads.com/*",
+        "https://www.quora.com/*",
+        "https://quora.com/*",
+        "https://*.quora.com/*",
+        "https://www.reddit.com/*",
+        "https://reddit.com/*",
+        "https://old.reddit.com/*",
+        "https://new.reddit.com/*"
+      ],
+      "js": [
+        "src/platforms/x.js",
+        "src/platforms/threads.js",
+        "src/platforms/quora.js",
+        "src/platforms/reddit.js",
+        "src/content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

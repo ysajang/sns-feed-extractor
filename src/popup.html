@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=360">
+  <title>SNS Feed Extractor</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <!-- 헤더 -->
+    <header class="header">
+      <div class="header-title">
+        <span class="header-icon">📋</span>
+        <h1>Feed Extractor</h1>
+      </div>
+      <div id="platform-badge" class="badge badge-inactive">
+        <span id="platform-icon">—</span>
+        <span id="platform-name">감지 중...</span>
+      </div>
+    </header>
+
+    <!-- 설정 -->
+    <section class="settings">
+      <label class="setting-row">
+        <span class="setting-label">링크 제거</span>
+        <input type="checkbox" id="opt-remove-links" checked>
+        <span class="toggle"></span>
+      </label>
+      <label class="setting-row">
+        <span class="setting-label">광고 포함</span>
+        <input type="checkbox" id="opt-include-ads">
+        <span class="toggle"></span>
+      </label>
+      <label class="setting-row">
+        <span class="setting-label">최대 추출 수</span>
+        <select id="opt-max-count">
+          <option value="20">20</option>
+          <option value="50" selected>50</option>
+          <option value="100">100</option>
+          <option value="200">200</option>
+        </select>
+      </label>
+      <label class="setting-row">
+        <span class="setting-label">스크롤 수집</span>
+        <input type="checkbox" id="opt-auto-scroll">
+        <span class="toggle"></span>
+      </label>
+    </section>
+
+    <!-- 액션 버튼 -->
+    <div class="actions">
+      <button id="btn-extract" class="btn btn-primary" disabled>
+        <span class="btn-icon">⚡</span>
+        <span class="btn-text">추출하기</span>
+      </button>
+    </div>
+
+    <!-- 결과 영역 -->
+    <div id="result-area" class="result-area hidden">
+      <div class="result-header">
+        <span id="result-count" class="result-count"></span>
+        <button id="btn-copy" class="btn btn-small">📋 복사</button>
+      </div>
+      <textarea id="result-text" class="result-text" readonly placeholder="추출 결과가 여기에 표시됩니다"></textarea>
+    </div>
+
+    <!-- 상태 메시지 -->
+    <div id="status-bar" class="status-bar hidden">
+      <span id="status-icon"></span>
+      <span id="status-message"></span>
+    </div>
+
+    <!-- Footer -->
+    <div class="popup-footer">
+      <a href="https://github.com/ysajang/sns-feed-extractor/issues" target="_blank">💬 Feedback</a>
+      <span class="footer-sep">·</span>
+      <a id="link-updates" href="#" target="_blank">📧 Get Updates</a>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
