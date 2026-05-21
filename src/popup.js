@@ -250,7 +250,7 @@
       const options = {
         removeLinks: els.optRemoveLinks.checked,
         includePromoted: els.optIncludeAds.checked,
-        maxCount: Math.min(500, Math.max(1, rawMax))
+        maxCount: Math.min(200, Math.max(1, rawMax))
       };
 
       saveSettings();
@@ -366,7 +366,7 @@
   els.optMaxCount.addEventListener('change', () => {
     let val = parseInt(els.optMaxCount.value, 10);
     if (isNaN(val) || val < 1) val = 1;
-    if (val > 500) val = 500;
+    if (val > 200) val = 200;
     els.optMaxCount.value = val;
     saveSettings();
   });

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SNS Feed Text Extractor",
-  "version": "1.5.5",
+  "version": "1.5.6",
   "description": "Extract clean text from X, Threads, Reddit & Quora feeds in one click. Built for AI workflows — paste into any LLM instantly.",
   "permissions": ["activeTab", "clipboardWrite", "storage"],
   "background": {
