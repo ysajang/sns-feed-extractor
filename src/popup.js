@@ -303,6 +303,7 @@
       if (status && status.status === 'running' && Date.now() - status.timestamp < 120000) {
         els.btnExtract.classList.add('btn-loading');
         els.btnExtract.disabled = true;
+        els.btnStop.classList.remove('hidden');
         showStatus('info', '🔄', t('scrollStart', String(status.count)));
         startPolling();
       }
