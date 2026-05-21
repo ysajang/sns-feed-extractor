@@ -174,7 +174,7 @@
    */
   chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
     
-    // ── 즉시 추출 (현재 화면) ───────────────────────────────────
+    // ── 스마트 추출: 즉시 시도 -> 부족하면 스크롤 ─────────────────
     if (request.action === 'extractFeed') {
       const parser = getActiveParser();
       
@@ -187,32 +187,44 @@
         return true;
       }
 
-      // Show more 버튼 클릭 후 DOM 업데이트 대기 -> 파싱
+      const options = request.options || {};
+      const maxCount = options.maxCount || 50;
+      const platformInfo = parser.getPlatformInfo();
+
       (async () => {
         try {
-          // expandAllShowMore가 있는 파서만 (X) 호출
+          // Show more 펼치기
           if (parser.expandAllShowMore) {
             const clicked = parser.expandAllShowMore();
-            if (clicked > 0) {
-              await sleep(500); // React DOM 업데이트 대기
-            }
+            if (clicked > 0) await sleep(500);
           }
 
-          const options = request.options || {};
-          const tweets = parser.parseFeed(options);
-          const formatted = parser.formatOutput(tweets);
-          const platformInfo = parser.getPlatformInfo();
+          // 1차: 현재 DOM에서 즉시 추출
+          const instantResults = parser.parseFeed(options);
 
-          sendResponse({
-            success: true,
-            data: {
-              platform: platformInfo.name,
-              platformId: platformInfo.id,
-              count: tweets.length,
-              formatted,
-              raw: tweets
-            }
-          });
+          if (instantResults.length >= maxCount) {
+            // 충분 -> 즉시 반환
+            const formatted = parser.formatOutput(instantResults);
+            sendResponse({
+              success: true,
+              data: {
+                platform: platformInfo.name,
+                platformId: platformInfo.id,
+                count: instantResults.length,
+                formatted,
+                raw: instantResults
+              }
+            });
+          } else {
+            // 부족 -> 스크롤 수집 시작 (fire & forget)
+            sendResponse({
+              success: true,
+              data: { started: true, instantCount: instantResults.length }
+            });
+
+            await chrome.storage.local.remove(SCROLL_STOP_KEY);
+            scrollAndCollect(parser, options, platformInfo);
+          }
         } catch (err) {
           sendResponse({
             success: false,
@@ -222,34 +234,6 @@
         }
       })();
       
-      return true;
-    }
-
-    // ── 자동 스크롤 수집 시작 (fire & forget) ────────────────────
-    if (request.action === 'extractWithScroll') {
-      const parser = getActiveParser();
-      
-      if (!parser) {
-        sendResponse({
-          success: false,
-          error: 'UNSUPPORTED_PLATFORM',
-          message: '지원하지 않는 플랫폼입니다'
-        });
-        return true;
-      }
-
-      const options = request.options || {};
-      const platformInfo = parser.getPlatformInfo();
-
-      // 즉시 응답 — "수집 시작됨"
-      sendResponse({
-        success: true,
-        data: { started: true }
-      });
-
-      // 백그라운드에서 독립 실행 (popup 닫혀도 계속)
-      scrollAndCollect(parser, options, platformInfo);
-
       return true;
     }
 

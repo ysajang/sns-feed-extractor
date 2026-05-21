@@ -27,8 +27,7 @@
     optIncludeAds:  document.getElementById('opt-include-ads'),
     optMaxCount:    document.getElementById('opt-max-count'),
     optMaxDown:     document.getElementById('opt-max-down'),
-    optMaxUp:       document.getElementById('opt-max-up'),
-    optAutoScroll:  document.getElementById('opt-auto-scroll')
+    optMaxUp:       document.getElementById('opt-max-up')
   };
 
   // ── Storage Keys ──────────────────────────────────────────────
@@ -55,9 +54,6 @@
         if (saved.maxCount) {
           els.optMaxCount.value = String(saved.maxCount);
         }
-        if (typeof saved.autoScroll === 'boolean') {
-          els.optAutoScroll.checked = saved.autoScroll;
-        }
       }
     } catch {
       // 기본값 유지
@@ -70,8 +66,7 @@
         [STORAGE_KEY]: {
           removeLinks: els.optRemoveLinks.checked,
           includeAds: els.optIncludeAds.checked,
-          maxCount: parseInt(els.optMaxCount.value, 10),
-          autoScroll: els.optAutoScroll.checked
+          maxCount: parseInt(els.optMaxCount.value, 10)
         }
       });
     } catch {
@@ -232,7 +227,6 @@
   // ── 추출 실행 ─────────────────────────────────────────────────
   async function handleExtract() {
     const btn = els.btnExtract;
-    const useAutoScroll = els.optAutoScroll.checked;
     
     btn.classList.add('btn-loading');
     btn.disabled = true;
@@ -257,44 +251,23 @@
 
       saveSettings();
 
-      if (useAutoScroll) {
-        // ── 스크롤 수집: fire & forget + polling ──────────────
-        showStatus('info', '🔄', '스크롤 수집 시작...');
+      // 이전 스크롤 데이터 정리
+      await chrome.storage.local.remove([SCROLL_STATUS_KEY, SCROLL_RESULT_KEY, SCROLL_STOP_KEY]);
 
-        // 이전 결과 + 중지 플래그 정리
-        await chrome.storage.local.remove([SCROLL_STATUS_KEY, SCROLL_RESULT_KEY, SCROLL_STOP_KEY]);
+      const response = await chrome.tabs.sendMessage(tab.id, {
+        action: 'extractFeed',
+        options
+      });
 
-        // 중지 버튼 표시
-        els.btnStop.classList.remove('hidden');
+      if (!response?.success) {
+        showStatus('error', '❌', response?.message || '추출 실패');
+        btn.classList.remove('btn-loading');
+        btn.disabled = false;
+        return;
+      }
 
-        const response = await chrome.tabs.sendMessage(tab.id, {
-          action: 'extractWithScroll',
-          options
-        });
-
-        if (response?.success) {
-          // 수집 시작됨 -> polling 시작
-          startPolling();
-        } else {
-          showStatus('error', '❌', response?.message || '수집 시작 실패');
-          btn.classList.remove('btn-loading');
-          btn.disabled = false;
-        }
-
-      } else {
-        // ── 즉시 추출 ─────────────────────────────────────────
-        const response = await chrome.tabs.sendMessage(tab.id, {
-          action: 'extractFeed',
-          options
-        });
-
-        if (!response?.success) {
-          showStatus('error', '❌', response?.message || '추출 실패');
-          btn.classList.remove('btn-loading');
-          btn.disabled = false;
-          return;
-        }
-
+      // content.js가 즉시 결과를 반환한 경우 (DOM에 충분한 포스트)
+      if (response.data.count && response.data.formatted) {
         const { count, formatted, platform } = response.data;
 
         if (count === 0) {
@@ -312,6 +285,12 @@
 
         btn.classList.remove('btn-loading');
         btn.disabled = false;
+
+      } else if (response.data.started) {
+        // 스크롤 수집 시작됨 -> polling
+        showStatus('info', '🔄', `스크롤 수집 시작... (현재 ${response.data.instantCount || 0}개)`);
+        els.btnStop.classList.remove('hidden');
+        startPolling();
       }
 
     } catch (err) {
@@ -382,7 +361,6 @@
   els.optMaxDown.addEventListener('click', (e) => { e.preventDefault(); stepMaxCount(-10); });
   els.optMaxUp.addEventListener('click', (e) => { e.preventDefault(); stepMaxCount(10); });
 
-  els.optAutoScroll.addEventListener('change', saveSettings);
 
   // Get Updates -> welcome page
   const linkUpdates = document.getElementById('link-updates');
