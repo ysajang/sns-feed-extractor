@@ -34,12 +34,7 @@
       </label>
       <label class="setting-row">
         <span class="setting-label">최대 추출 수</span>
-        <select id="opt-max-count">
-          <option value="20">20</option>
-          <option value="50" selected>50</option>
-          <option value="100">100</option>
-          <option value="200">200</option>
-        </select>
+        <input type="number" id="opt-max-count" min="1" max="500" value="50" step="1">
       </label>
       <label class="setting-row">
         <span class="setting-label">스크롤 수집</span>

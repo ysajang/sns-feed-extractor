@@ -140,8 +140,9 @@ input[type="checkbox"]:checked + .toggle::after {
   background: #1d9bf0;
 }
 
-/* Select */
-.setting-row select {
+/* Select & Number Input */
+.setting-row select,
+.setting-row input[type="number"] {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 6px;
@@ -150,10 +151,20 @@ input[type="checkbox"]:checked + .toggle::after {
   font-size: 12px;
   cursor: pointer;
   outline: none;
+  width: 60px;
+  text-align: center;
 }
 
-.setting-row select:focus {
+.setting-row select:focus,
+.setting-row input[type="number"]:focus {
   border-color: rgba(29, 155, 240, 0.5);
+}
+
+/* Remove number input spinners */
+.setting-row input[type="number"]::-webkit-outer-spin-button,
+.setting-row input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /* ── Buttons ───────────────────────────────────────────────── */

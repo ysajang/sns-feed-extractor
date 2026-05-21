@@ -246,10 +246,11 @@
         return;
       }
 
+      const rawMax = parseInt(els.optMaxCount.value, 10) || 50;
       const options = {
         removeLinks: els.optRemoveLinks.checked,
         includePromoted: els.optIncludeAds.checked,
-        maxCount: parseInt(els.optMaxCount.value, 10)
+        maxCount: Math.min(500, Math.max(1, rawMax))
       };
 
       saveSettings();
