@@ -26,6 +26,8 @@
     optRemoveLinks: document.getElementById('opt-remove-links'),
     optIncludeAds:  document.getElementById('opt-include-ads'),
     optMaxCount:    document.getElementById('opt-max-count'),
+    optMaxDown:     document.getElementById('opt-max-down'),
+    optMaxUp:       document.getElementById('opt-max-up'),
     optAutoScroll:  document.getElementById('opt-auto-scroll')
   };
 
@@ -370,6 +372,16 @@
     els.optMaxCount.value = val;
     saveSettings();
   });
+
+  function stepMaxCount(delta) {
+    let val = parseInt(els.optMaxCount.value, 10) || 50;
+    val = Math.min(200, Math.max(1, val + delta));
+    els.optMaxCount.value = val;
+    saveSettings();
+  }
+  els.optMaxDown.addEventListener('click', (e) => { e.preventDefault(); stepMaxCount(-10); });
+  els.optMaxUp.addEventListener('click', (e) => { e.preventDefault(); stepMaxCount(10); });
+
   els.optAutoScroll.addEventListener('change', saveSettings);
 
   // Get Updates -> welcome page
