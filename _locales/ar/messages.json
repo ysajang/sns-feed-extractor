@@ -1,0 +1,68 @@
+{
+  "extName": {
+    "message": "مستخرج نصوص SNS"
+  },
+  "extDesc": {
+    "message": "استخراج النصوص من X وThreads وReddit وQuora بنقرة واحدة. مصمم لسير عمل الذكاء الاصطناعي."
+  },
+  "detecting": {
+    "message": "جارٍ الكشف..."
+  },
+  "removeLinks": {
+    "message": "إزالة الروابط"
+  },
+  "includeAds": {
+    "message": "تضمين الإعلانات"
+  },
+  "maxCount": {
+    "message": "الحد الأقصى"
+  },
+  "extract": {
+    "message": "استخراج"
+  },
+  "stop": {
+    "message": "إيقاف"
+  },
+  "copy": {
+    "message": "📋 نسخ"
+  },
+  "copied": {
+    "message": "✅ تم النسخ"
+  },
+  "placeholder": {
+    "message": "سيظهر النص المستخرج هنا"
+  },
+  "noTab": {
+    "message": "لم يتم العثور على علامة تبويب نشطة"
+  },
+  "unsupported": {
+    "message": "موقع غير مدعوم"
+  },
+  "notAvailable": {
+    "message": "غير متاح"
+  },
+  "extractFail": {
+    "message": "فشل الاستخراج"
+  },
+  "noText": {
+    "message": "لا يوجد نص للاستخراج"
+  },
+  "postsExtracted": {
+    "message": "تم استخراج $1 منشور"
+  },
+  "extractDone": {
+    "message": "✅ تم استخراج $1 منشور"
+  },
+  "saved": {
+    "message": "محفوظ"
+  },
+  "scrollStart": {
+    "message": "🔄 جمع بالتمرير... ($1 حتى الآن)"
+  },
+  "scrollError": {
+    "message": "خطأ أثناء الجمع"
+  },
+  "stopRequested": {
+    "message": "⏹ جارٍ الإيقاف... حفظ ما تم جمعه"
+  }
+}

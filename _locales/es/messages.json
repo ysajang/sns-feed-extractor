@@ -1,0 +1,68 @@
+{
+  "extName": {
+    "message": "Extractor de Texto SNS"
+  },
+  "extDesc": {
+    "message": "Extrae texto limpio de X, Threads, Reddit y Quora con un clic. Diseñado para flujos de trabajo con IA."
+  },
+  "detecting": {
+    "message": "Detectando..."
+  },
+  "removeLinks": {
+    "message": "Quitar enlaces"
+  },
+  "includeAds": {
+    "message": "Incluir anuncios"
+  },
+  "maxCount": {
+    "message": "Máx. publicaciones"
+  },
+  "extract": {
+    "message": "Extraer"
+  },
+  "stop": {
+    "message": "Detener"
+  },
+  "copy": {
+    "message": "📋 Copiar"
+  },
+  "copied": {
+    "message": "✅ Copiado"
+  },
+  "placeholder": {
+    "message": "El texto extraído aparecerá aquí"
+  },
+  "noTab": {
+    "message": "No se encontró pestaña activa"
+  },
+  "unsupported": {
+    "message": "Sitio no soportado"
+  },
+  "notAvailable": {
+    "message": "No disponible"
+  },
+  "extractFail": {
+    "message": "Extracción fallida"
+  },
+  "noText": {
+    "message": "No hay texto para extraer"
+  },
+  "postsExtracted": {
+    "message": "$1 publicaciones extraídas"
+  },
+  "extractDone": {
+    "message": "✅ $1 publicaciones extraídas"
+  },
+  "saved": {
+    "message": "guardado"
+  },
+  "scrollStart": {
+    "message": "🔄 Recopilando con scroll... ($1 hasta ahora)"
+  },
+  "scrollError": {
+    "message": "Error durante la recopilación"
+  },
+  "stopRequested": {
+    "message": "⏹ Deteniendo... guardando lo recopilado"
+  }
+}

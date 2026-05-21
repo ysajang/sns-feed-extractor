@@ -1,0 +1,68 @@
+{
+  "extName": {
+    "message": "SNS Feed Text Extraktor"
+  },
+  "extDesc": {
+    "message": "Text aus X, Threads, Reddit & Quora mit einem Klick extrahieren. Für KI-Workflows."
+  },
+  "detecting": {
+    "message": "Erkennung..."
+  },
+  "removeLinks": {
+    "message": "Links entfernen"
+  },
+  "includeAds": {
+    "message": "Werbung einbeziehen"
+  },
+  "maxCount": {
+    "message": "Max. Beiträge"
+  },
+  "extract": {
+    "message": "Extrahieren"
+  },
+  "stop": {
+    "message": "Stopp"
+  },
+  "copy": {
+    "message": "📋 Kopieren"
+  },
+  "copied": {
+    "message": "✅ Kopiert"
+  },
+  "placeholder": {
+    "message": "Extrahierter Text wird hier angezeigt"
+  },
+  "noTab": {
+    "message": "Kein aktiver Tab gefunden"
+  },
+  "unsupported": {
+    "message": "Nicht unterstützte Seite"
+  },
+  "notAvailable": {
+    "message": "Nicht verfügbar"
+  },
+  "extractFail": {
+    "message": "Extraktion fehlgeschlagen"
+  },
+  "noText": {
+    "message": "Kein Text zum Extrahieren"
+  },
+  "postsExtracted": {
+    "message": "$1 Beiträge extrahiert"
+  },
+  "extractDone": {
+    "message": "✅ $1 Beiträge extrahiert"
+  },
+  "saved": {
+    "message": "gespeichert"
+  },
+  "scrollStart": {
+    "message": "🔄 Scroll-Sammlung... ($1 bisher)"
+  },
+  "scrollError": {
+    "message": "Fehler bei der Scroll-Sammlung"
+  },
+  "stopRequested": {
+    "message": "⏹ Wird gestoppt... Gesammeltes wird gespeichert"
+  }
+}

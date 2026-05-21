@@ -1,0 +1,68 @@
+{
+  "extName": {
+    "message": "SNS फ़ीड टेक्स्ट एक्सट्रैक्टर"
+  },
+  "extDesc": {
+    "message": "X, Threads, Reddit और Quora से एक क्लिक में टेक्स्ट निकालें। AI वर्कफ़्लो के लिए।"
+  },
+  "detecting": {
+    "message": "पहचान रहा है..."
+  },
+  "removeLinks": {
+    "message": "लिंक हटाएं"
+  },
+  "includeAds": {
+    "message": "विज्ञापन शामिल करें"
+  },
+  "maxCount": {
+    "message": "अधिकतम पोस्ट"
+  },
+  "extract": {
+    "message": "निकालें"
+  },
+  "stop": {
+    "message": "रोकें"
+  },
+  "copy": {
+    "message": "📋 कॉपी"
+  },
+  "copied": {
+    "message": "✅ कॉपी हो गया"
+  },
+  "placeholder": {
+    "message": "निकाला गया टेक्स्ट यहाँ दिखेगा"
+  },
+  "noTab": {
+    "message": "कोई सक्रिय टैब नहीं मिला"
+  },
+  "unsupported": {
+    "message": "असमर्थित साइट"
+  },
+  "notAvailable": {
+    "message": "उपलब्ध नहीं"
+  },
+  "extractFail": {
+    "message": "निकालना विफल"
+  },
+  "noText": {
+    "message": "निकालने के लिए कोई टेक्स्ट नहीं"
+  },
+  "postsExtracted": {
+    "message": "$1 पोस्ट निकाले गए"
+  },
+  "extractDone": {
+    "message": "✅ $1 पोस्ट निकाले गए"
+  },
+  "saved": {
+    "message": "सहेजा गया"
+  },
+  "scrollStart": {
+    "message": "🔄 स्क्रॉल कर रहा है... (अभी तक $1)"
+  },
+  "scrollError": {
+    "message": "स्क्रॉल संग्रह में त्रुटि"
+  },
+  "stopRequested": {
+    "message": "⏹ रोक रहा है... एकत्रित सहेज रहा है"
+  }
+}

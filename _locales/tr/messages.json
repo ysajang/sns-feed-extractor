@@ -1,0 +1,68 @@
+{
+  "extName": {
+    "message": "SNS Akış Metin Çıkarıcı"
+  },
+  "extDesc": {
+    "message": "X, Threads, Reddit ve Quora'dan tek tıkla metin çıkarın. AI iş akışları için tasarlandı."
+  },
+  "detecting": {
+    "message": "Algılanıyor..."
+  },
+  "removeLinks": {
+    "message": "Bağlantıları kaldır"
+  },
+  "includeAds": {
+    "message": "Reklamları dahil et"
+  },
+  "maxCount": {
+    "message": "Maks. gönderi"
+  },
+  "extract": {
+    "message": "Çıkar"
+  },
+  "stop": {
+    "message": "Durdur"
+  },
+  "copy": {
+    "message": "📋 Kopyala"
+  },
+  "copied": {
+    "message": "✅ Kopyalandı"
+  },
+  "placeholder": {
+    "message": "Çıkarılan metin burada görünecek"
+  },
+  "noTab": {
+    "message": "Aktif sekme bulunamadı"
+  },
+  "unsupported": {
+    "message": "Desteklenmeyen site"
+  },
+  "notAvailable": {
+    "message": "Kullanılamıyor"
+  },
+  "extractFail": {
+    "message": "Çıkarma başarısız"
+  },
+  "noText": {
+    "message": "Çıkarılacak metin yok"
+  },
+  "postsExtracted": {
+    "message": "$1 gönderi çıkarıldı"
+  },
+  "extractDone": {
+    "message": "✅ $1 gönderi çıkarıldı"
+  },
+  "saved": {
+    "message": "kaydedildi"
+  },
+  "scrollStart": {
+    "message": "🔄 Kaydırarak toplama... (şu ana kadar $1)"
+  },
+  "scrollError": {
+    "message": "Toplama sırasında hata"
+  },
+  "stopRequested": {
+    "message": "⏹ Durduruluyor... toplananlar kaydediliyor"
+  }
+}

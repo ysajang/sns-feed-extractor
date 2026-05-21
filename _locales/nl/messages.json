@@ -1,0 +1,68 @@
+{
+  "extName": {
+    "message": "SNS Feed Tekst Extractor"
+  },
+  "extDesc": {
+    "message": "Extraheer tekst uit X, Threads, Reddit & Quora met één klik. Gebouwd voor AI-workflows."
+  },
+  "detecting": {
+    "message": "Detecteren..."
+  },
+  "removeLinks": {
+    "message": "Links verwijderen"
+  },
+  "includeAds": {
+    "message": "Advertenties opnemen"
+  },
+  "maxCount": {
+    "message": "Max. berichten"
+  },
+  "extract": {
+    "message": "Extraheren"
+  },
+  "stop": {
+    "message": "Stoppen"
+  },
+  "copy": {
+    "message": "📋 Kopiëren"
+  },
+  "copied": {
+    "message": "✅ Gekopieerd"
+  },
+  "placeholder": {
+    "message": "Geëxtraheerde tekst verschijnt hier"
+  },
+  "noTab": {
+    "message": "Geen actief tabblad gevonden"
+  },
+  "unsupported": {
+    "message": "Niet-ondersteunde site"
+  },
+  "notAvailable": {
+    "message": "Niet beschikbaar"
+  },
+  "extractFail": {
+    "message": "Extractie mislukt"
+  },
+  "noText": {
+    "message": "Geen tekst om te extraheren"
+  },
+  "postsExtracted": {
+    "message": "$1 berichten geëxtraheerd"
+  },
+  "extractDone": {
+    "message": "✅ $1 berichten geëxtraheerd"
+  },
+  "saved": {
+    "message": "opgeslagen"
+  },
+  "scrollStart": {
+    "message": "🔄 Verzamelen door scrollen... ($1 tot nu toe)"
+  },
+  "scrollError": {
+    "message": "Fout tijdens verzamelen"
+  },
+  "stopRequested": {
+    "message": "⏹ Stoppen... verzamelde opslaan"
+  }
+}

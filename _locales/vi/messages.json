@@ -1,0 +1,68 @@
+{
+  "extName": {
+    "message": "Trích xuất văn bản SNS"
+  },
+  "extDesc": {
+    "message": "Trích xuất văn bản từ X, Threads, Reddit và Quora chỉ với một cú nhấp. Dành cho quy trình AI."
+  },
+  "detecting": {
+    "message": "Đang phát hiện..."
+  },
+  "removeLinks": {
+    "message": "Xóa liên kết"
+  },
+  "includeAds": {
+    "message": "Bao gồm quảng cáo"
+  },
+  "maxCount": {
+    "message": "Tối đa bài viết"
+  },
+  "extract": {
+    "message": "Trích xuất"
+  },
+  "stop": {
+    "message": "Dừng"
+  },
+  "copy": {
+    "message": "📋 Sao chép"
+  },
+  "copied": {
+    "message": "✅ Đã sao chép"
+  },
+  "placeholder": {
+    "message": "Văn bản trích xuất sẽ hiển thị ở đây"
+  },
+  "noTab": {
+    "message": "Không tìm thấy tab đang hoạt động"
+  },
+  "unsupported": {
+    "message": "Trang không được hỗ trợ"
+  },
+  "notAvailable": {
+    "message": "Không khả dụng"
+  },
+  "extractFail": {
+    "message": "Trích xuất thất bại"
+  },
+  "noText": {
+    "message": "Không có văn bản để trích xuất"
+  },
+  "postsExtracted": {
+    "message": "Đã trích xuất $1 bài"
+  },
+  "extractDone": {
+    "message": "✅ Đã trích xuất $1 bài"
+  },
+  "saved": {
+    "message": "đã lưu"
+  },
+  "scrollStart": {
+    "message": "🔄 Đang cuộn thu thập... ($1 cho đến nay)"
+  },
+  "scrollError": {
+    "message": "Lỗi khi thu thập"
+  },
+  "stopRequested": {
+    "message": "⏹ Đang dừng... lưu phần đã thu thập"
+  }
+}

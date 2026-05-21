@@ -1,0 +1,68 @@
+{
+  "extName": {
+    "message": "ตัวดึงข้อความจากฟีด SNS"
+  },
+  "extDesc": {
+    "message": "ดึงข้อความจาก X, Threads, Reddit และ Quora ด้วยคลิกเดียว สำหรับเวิร์กโฟลว์ AI"
+  },
+  "detecting": {
+    "message": "กำลังตรวจจับ..."
+  },
+  "removeLinks": {
+    "message": "ลบลิงก์"
+  },
+  "includeAds": {
+    "message": "รวมโฆษณา"
+  },
+  "maxCount": {
+    "message": "จำนวนสูงสุด"
+  },
+  "extract": {
+    "message": "ดึงข้อมูล"
+  },
+  "stop": {
+    "message": "หยุด"
+  },
+  "copy": {
+    "message": "📋 คัดลอก"
+  },
+  "copied": {
+    "message": "✅ คัดลอกแล้ว"
+  },
+  "placeholder": {
+    "message": "ข้อความที่ดึงจะแสดงที่นี่"
+  },
+  "noTab": {
+    "message": "ไม่พบแท็บที่ใช้งาน"
+  },
+  "unsupported": {
+    "message": "ไซต์ไม่รองรับ"
+  },
+  "notAvailable": {
+    "message": "ไม่พร้อมใช้งาน"
+  },
+  "extractFail": {
+    "message": "ดึงข้อมูลล้มเหลว"
+  },
+  "noText": {
+    "message": "ไม่มีข้อความให้ดึง"
+  },
+  "postsExtracted": {
+    "message": "ดึงแล้ว $1 โพสต์"
+  },
+  "extractDone": {
+    "message": "✅ ดึงแล้ว $1 โพสต์"
+  },
+  "saved": {
+    "message": "บันทึกแล้ว"
+  },
+  "scrollStart": {
+    "message": "🔄 กำลังเลื่อนเก็บ... ($1 จนถึงตอนนี้)"
+  },
+  "scrollError": {
+    "message": "เกิดข้อผิดพลาดขณะเก็บ"
+  },
+  "stopRequested": {
+    "message": "⏹ กำลังหยุด... บันทึกที่เก็บแล้ว"
+  }
+}

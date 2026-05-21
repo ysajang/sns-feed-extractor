@@ -1,0 +1,68 @@
+{
+  "extName": {
+    "message": "SNS動態文字擷取器"
+  },
+  "extDesc": {
+    "message": "一鍵從X、Threads、Reddit和Quora擷取純文字，專為AI工作流設計。"
+  },
+  "detecting": {
+    "message": "偵測中..."
+  },
+  "removeLinks": {
+    "message": "移除連結"
+  },
+  "includeAds": {
+    "message": "包含廣告"
+  },
+  "maxCount": {
+    "message": "最大擷取數"
+  },
+  "extract": {
+    "message": "擷取"
+  },
+  "stop": {
+    "message": "停止"
+  },
+  "copy": {
+    "message": "📋 複製"
+  },
+  "copied": {
+    "message": "✅ 已複製"
+  },
+  "placeholder": {
+    "message": "擷取結果將顯示於此"
+  },
+  "noTab": {
+    "message": "找不到活動分頁"
+  },
+  "unsupported": {
+    "message": "不支援的網站"
+  },
+  "notAvailable": {
+    "message": "無法使用"
+  },
+  "extractFail": {
+    "message": "擷取失敗"
+  },
+  "noText": {
+    "message": "沒有可擷取的文字"
+  },
+  "postsExtracted": {
+    "message": "已擷取$1筆"
+  },
+  "extractDone": {
+    "message": "✅ 已擷取$1筆文字"
+  },
+  "saved": {
+    "message": "已儲存"
+  },
+  "scrollStart": {
+    "message": "🔄 捲動收集中...（目前$1筆）"
+  },
+  "scrollError": {
+    "message": "捲動收集時發生錯誤"
+  },
+  "stopRequested": {
+    "message": "⏹ 正在停止...儲存已收集內容"
+  }
+}

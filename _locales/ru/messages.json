@@ -1,0 +1,68 @@
+{
+  "extName": {
+    "message": "Извлечение текста из SNS"
+  },
+  "extDesc": {
+    "message": "Извлекайте текст из X, Threads, Reddit и Quora одним кликом. Для AI-процессов."
+  },
+  "detecting": {
+    "message": "Определение..."
+  },
+  "removeLinks": {
+    "message": "Удалить ссылки"
+  },
+  "includeAds": {
+    "message": "Включить рекламу"
+  },
+  "maxCount": {
+    "message": "Макс. постов"
+  },
+  "extract": {
+    "message": "Извлечь"
+  },
+  "stop": {
+    "message": "Стоп"
+  },
+  "copy": {
+    "message": "📋 Копировать"
+  },
+  "copied": {
+    "message": "✅ Скопировано"
+  },
+  "placeholder": {
+    "message": "Извлечённый текст появится здесь"
+  },
+  "noTab": {
+    "message": "Активная вкладка не найдена"
+  },
+  "unsupported": {
+    "message": "Сайт не поддерживается"
+  },
+  "notAvailable": {
+    "message": "Недоступно"
+  },
+  "extractFail": {
+    "message": "Ошибка извлечения"
+  },
+  "noText": {
+    "message": "Нет текста для извлечения"
+  },
+  "postsExtracted": {
+    "message": "Извлечено $1 постов"
+  },
+  "extractDone": {
+    "message": "✅ Извлечено $1 постов"
+  },
+  "saved": {
+    "message": "сохранено"
+  },
+  "scrollStart": {
+    "message": "🔄 Сбор прокруткой... ($1 пока)"
+  },
+  "scrollError": {
+    "message": "Ошибка при сборе прокруткой"
+  },
+  "stopRequested": {
+    "message": "⏹ Остановка... сохранение собранного"
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "extName": {
+    "message": "Ekstraktor tekstu SNS"
+  },
+  "extDesc": {
+    "message": "Wyodrębnij tekst z X, Threads, Reddit i Quora jednym kliknięciem. Dla procesów AI."
+  },
+  "detecting": {
+    "message": "Wykrywanie..."
+  },
+  "removeLinks": {
+    "message": "Usuń linki"
+  },
+  "includeAds": {
+    "message": "Uwzględnij reklamy"
+  },
+  "maxCount": {
+    "message": "Maks. postów"
+  },
+  "extract": {
+    "message": "Wyodrębnij"
+  },
+  "stop": {
+    "message": "Zatrzymaj"
+  },
+  "copy": {
+    "message": "📋 Kopiuj"
+  },
+  "copied": {
+    "message": "✅ Skopiowano"
+  },
+  "placeholder": {
+    "message": "Wyodrębniony tekst pojawi się tutaj"
+  },
+  "noTab": {
+    "message": "Nie znaleziono aktywnej karty"
+  },
+  "unsupported": {
+    "message": "Nieobsługiwana strona"
+  },
+  "notAvailable": {
+    "message": "Niedostępne"
+  },
+  "extractFail": {
+    "message": "Wyodrębnianie nie powiodło się"
+  },
+  "noText": {
+    "message": "Brak tekstu do wyodrębnienia"
+  },
+  "postsExtracted": {
+    "message": "Wyodrębniono $1 postów"
+  },
+  "extractDone": {
+    "message": "✅ Wyodrębniono $1 postów"
+  },
+  "saved": {
+    "message": "zapisano"
+  },
+  "scrollStart": {
+    "message": "🔄 Zbieranie przewijaniem... ($1 dotychczas)"
+  },
+  "scrollError": {
+    "message": "Błąd podczas zbierania"
+  },
+  "stopRequested": {
+    "message": "⏹ Zatrzymywanie... zapisywanie zebranych"
+  }
+}

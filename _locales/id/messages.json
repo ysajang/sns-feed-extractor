@@ -1,0 +1,68 @@
+{
+  "extName": {
+    "message": "Ekstraktor Teks Feed SNS"
+  },
+  "extDesc": {
+    "message": "Ekstrak teks dari X, Threads, Reddit & Quora dengan satu klik. Untuk alur kerja AI."
+  },
+  "detecting": {
+    "message": "Mendeteksi..."
+  },
+  "removeLinks": {
+    "message": "Hapus tautan"
+  },
+  "includeAds": {
+    "message": "Sertakan iklan"
+  },
+  "maxCount": {
+    "message": "Maks. postingan"
+  },
+  "extract": {
+    "message": "Ekstrak"
+  },
+  "stop": {
+    "message": "Berhenti"
+  },
+  "copy": {
+    "message": "📋 Salin"
+  },
+  "copied": {
+    "message": "✅ Tersalin"
+  },
+  "placeholder": {
+    "message": "Teks yang diekstrak akan muncul di sini"
+  },
+  "noTab": {
+    "message": "Tab aktif tidak ditemukan"
+  },
+  "unsupported": {
+    "message": "Situs tidak didukung"
+  },
+  "notAvailable": {
+    "message": "Tidak tersedia"
+  },
+  "extractFail": {
+    "message": "Ekstraksi gagal"
+  },
+  "noText": {
+    "message": "Tidak ada teks untuk diekstrak"
+  },
+  "postsExtracted": {
+    "message": "$1 postingan diekstrak"
+  },
+  "extractDone": {
+    "message": "✅ $1 postingan diekstrak"
+  },
+  "saved": {
+    "message": "tersimpan"
+  },
+  "scrollStart": {
+    "message": "🔄 Mengumpulkan dengan scroll... ($1 sejauh ini)"
+  },
+  "scrollError": {
+    "message": "Error saat pengumpulan"
+  },
+  "stopRequested": {
+    "message": "⏹ Menghentikan... menyimpan yang terkumpul"
+  }
+}

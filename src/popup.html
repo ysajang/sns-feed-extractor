@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=360">
-  <title>SNS Feed Extractor</title>
+  <title>Feed Extractor</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
@@ -16,24 +16,24 @@
       </div>
       <div id="platform-badge" class="badge badge-inactive">
         <span id="platform-icon">—</span>
-        <span id="platform-name">감지 중...</span>
+        <span id="platform-name" data-i18n="detecting"></span>
       </div>
     </header>
 
     <!-- 설정 -->
     <section class="settings">
       <label class="setting-row">
-        <span class="setting-label">링크 제거</span>
+        <span class="setting-label" data-i18n="removeLinks"></span>
         <input type="checkbox" id="opt-remove-links" checked>
         <span class="toggle"></span>
       </label>
       <label class="setting-row">
-        <span class="setting-label">광고 포함</span>
+        <span class="setting-label" data-i18n="includeAds"></span>
         <input type="checkbox" id="opt-include-ads">
         <span class="toggle"></span>
       </label>
       <div class="setting-row">
-        <span class="setting-label">최대 추출 수</span>
+        <span class="setting-label" data-i18n="maxCount"></span>
         <div class="stepper">
           <button id="opt-max-down" class="stepper-btn" type="button">−</button>
           <input type="number" id="opt-max-count" min="1" max="200" value="50" step="1">
@@ -46,11 +46,11 @@
     <div class="actions">
       <button id="btn-extract" class="btn btn-primary" disabled>
         <span class="btn-icon">⚡</span>
-        <span class="btn-text">추출하기</span>
+        <span class="btn-text" data-i18n="extract"></span>
       </button>
       <button id="btn-stop" class="btn btn-stop hidden">
         <span class="btn-icon">⏹</span>
-        <span class="btn-text">중지</span>
+        <span class="btn-text" data-i18n="stop"></span>
       </button>
     </div>
 
@@ -58,9 +58,9 @@
     <div id="result-area" class="result-area hidden">
       <div class="result-header">
         <span id="result-count" class="result-count"></span>
-        <button id="btn-copy" class="btn btn-small">📋 복사</button>
+        <button id="btn-copy" class="btn btn-small" data-i18n="copy"></button>
       </div>
-      <textarea id="result-text" class="result-text" readonly placeholder="추출 결과가 여기에 표시됩니다"></textarea>
+      <textarea id="result-text" class="result-text" readonly data-i18n-placeholder="placeholder"></textarea>
     </div>
 
     <!-- 상태 메시지 -->

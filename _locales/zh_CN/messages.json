@@ -1,0 +1,68 @@
+{
+  "extName": {
+    "message": "SNS动态文本提取器"
+  },
+  "extDesc": {
+    "message": "一键从X、Threads、Reddit和Quora提取纯文本，专为AI工作流设计。"
+  },
+  "detecting": {
+    "message": "检测中..."
+  },
+  "removeLinks": {
+    "message": "移除链接"
+  },
+  "includeAds": {
+    "message": "包含广告"
+  },
+  "maxCount": {
+    "message": "最大提取数"
+  },
+  "extract": {
+    "message": "提取"
+  },
+  "stop": {
+    "message": "停止"
+  },
+  "copy": {
+    "message": "📋 复制"
+  },
+  "copied": {
+    "message": "✅ 已复制"
+  },
+  "placeholder": {
+    "message": "提取结果将显示在此处"
+  },
+  "noTab": {
+    "message": "未找到活动标签页"
+  },
+  "unsupported": {
+    "message": "不支持的网站"
+  },
+  "notAvailable": {
+    "message": "不可用"
+  },
+  "extractFail": {
+    "message": "提取失败"
+  },
+  "noText": {
+    "message": "没有可提取的文本"
+  },
+  "postsExtracted": {
+    "message": "已提取$1条"
+  },
+  "extractDone": {
+    "message": "✅ 已提取$1条文本"
+  },
+  "saved": {
+    "message": "已保存"
+  },
+  "scrollStart": {
+    "message": "🔄 滚动收集中...（当前$1条）"
+  },
+  "scrollError": {
+    "message": "滚动收集时出错"
+  },
+  "stopRequested": {
+    "message": "⏹ 正在停止...保存已收集内容"
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "extName": {
+    "message": "SNS Feed Text Extractor"
+  },
+  "extDesc": {
+    "message": "Extract clean text from X, Threads, Reddit & Quora feeds in one click. Built for AI workflows."
+  },
+  "detecting": {
+    "message": "Detecting..."
+  },
+  "removeLinks": {
+    "message": "Remove links"
+  },
+  "includeAds": {
+    "message": "Include ads"
+  },
+  "maxCount": {
+    "message": "Max posts"
+  },
+  "extract": {
+    "message": "Extract"
+  },
+  "stop": {
+    "message": "Stop"
+  },
+  "copy": {
+    "message": "📋 Copy"
+  },
+  "copied": {
+    "message": "✅ Copied"
+  },
+  "placeholder": {
+    "message": "Extracted text will appear here"
+  },
+  "noTab": {
+    "message": "No active tab found"
+  },
+  "unsupported": {
+    "message": "Unsupported site"
+  },
+  "notAvailable": {
+    "message": "Not available"
+  },
+  "extractFail": {
+    "message": "Extraction failed"
+  },
+  "noText": {
+    "message": "No text to extract"
+  },
+  "postsExtracted": {
+    "message": "$1 posts extracted"
+  },
+  "extractDone": {
+    "message": "✅ $1 posts extracted"
+  },
+  "saved": {
+    "message": "saved"
+  },
+  "scrollStart": {
+    "message": "🔄 Scroll collecting... ($1 so far)"
+  },
+  "scrollError": {
+    "message": "Error during scroll collection"
+  },
+  "stopRequested": {
+    "message": "⏹ Stopping... saving collected posts"
+  }
+}

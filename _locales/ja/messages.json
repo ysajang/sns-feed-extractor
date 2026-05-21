@@ -1,0 +1,68 @@
+{
+  "extName": {
+    "message": "SNSフィードテキスト抽出"
+  },
+  "extDesc": {
+    "message": "X、Threads、Reddit、Quoraフィードからワンクリックでテキストを抽出。AIワークフロー向け。"
+  },
+  "detecting": {
+    "message": "検出中..."
+  },
+  "removeLinks": {
+    "message": "リンク除去"
+  },
+  "includeAds": {
+    "message": "広告を含む"
+  },
+  "maxCount": {
+    "message": "最大抽出数"
+  },
+  "extract": {
+    "message": "抽出する"
+  },
+  "stop": {
+    "message": "停止"
+  },
+  "copy": {
+    "message": "📋 コピー"
+  },
+  "copied": {
+    "message": "✅ コピー済み"
+  },
+  "placeholder": {
+    "message": "抽出結果がここに表示されます"
+  },
+  "noTab": {
+    "message": "アクティブなタブが見つかりません"
+  },
+  "unsupported": {
+    "message": "非対応サイト"
+  },
+  "notAvailable": {
+    "message": "利用不可"
+  },
+  "extractFail": {
+    "message": "抽出失敗"
+  },
+  "noText": {
+    "message": "抽出するテキストがありません"
+  },
+  "postsExtracted": {
+    "message": "$1件抽出"
+  },
+  "extractDone": {
+    "message": "✅ $1件のテキストを抽出完了"
+  },
+  "saved": {
+    "message": "保存済み"
+  },
+  "scrollStart": {
+    "message": "🔄 スクロール収集中... (現在$1件)"
+  },
+  "scrollError": {
+    "message": "スクロール収集中にエラーが発生"
+  },
+  "stopRequested": {
+    "message": "⏹ 停止要求... 収集分を保存中"
+  }
+}
