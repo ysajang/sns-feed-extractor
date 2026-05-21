@@ -13,8 +13,9 @@
   'use strict';
 
   // ── 중복 주입 방지 ────────────────────────────────────────────
-  if (window.__SNS_EXTRACTOR_LOADED__) return;
-  window.__SNS_EXTRACTOR_LOADED__ = true;
+  const GUARD_KEY = '__SNS_EXTRACTOR_' + chrome.runtime.id;
+  if (window[GUARD_KEY]) return;
+  window[GUARD_KEY] = true;
 
   const SCROLL_RESULT_KEY = 'sns_extractor_scroll_result';
   const SCROLL_STATUS_KEY = 'sns_extractor_scroll_status';
