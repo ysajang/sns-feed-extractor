@@ -191,8 +191,6 @@ const XParser = (() => {
    * @returns {Array<{handle: string, time: string, text: string}>}
    */
   function parseFeed(options = {}) {
-    // Show more 버튼 클릭하여 잘린 트윗 펼치기
-    expandAllShowMore();
     const {
       removeLinks = true,
       includePromoted = false,
@@ -276,6 +274,7 @@ const XParser = (() => {
     formatOutput,
     isActive,
     getPlatformInfo,
+    expandAllShowMore,
     SELECTORS
   };
 })();

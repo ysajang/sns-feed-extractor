@@ -95,6 +95,12 @@
       while (allTweets.size < maxCount && noNewCount < MAX_NO_NEW && scrollAttempts < MAX_SCROLL_ATTEMPTS) {
         // 중지 요청 확인
         if (await shouldStop()) break;
+        // Show more 버튼 클릭 (X 전용)
+        if (parser.expandAllShowMore) {
+          const clicked = parser.expandAllShowMore();
+          if (clicked > 0) await sleep(300);
+        }
+
         // 현재 화면의 포스트 파싱
         const currentBatch = parser.parseFeed({
           ...options,
@@ -170,40 +176,51 @@
     
     // ── 즉시 추출 (현재 화면) ───────────────────────────────────
     if (request.action === 'extractFeed') {
-      try {
-        const parser = getActiveParser();
-        
-        if (!parser) {
-          sendResponse({
-            success: false,
-            error: 'UNSUPPORTED_PLATFORM',
-            message: '지원하지 않는 플랫폼입니다'
-          });
-          return true;
-        }
-
-        const options = request.options || {};
-        const tweets = parser.parseFeed(options);
-        const formatted = parser.formatOutput(tweets);
-        const platformInfo = parser.getPlatformInfo();
-
-        sendResponse({
-          success: true,
-          data: {
-            platform: platformInfo.name,
-            platformId: platformInfo.id,
-            count: tweets.length,
-            formatted,
-            raw: tweets
-          }
-        });
-      } catch (err) {
+      const parser = getActiveParser();
+      
+      if (!parser) {
         sendResponse({
           success: false,
-          error: 'PARSE_ERROR',
-          message: `파싱 실패: ${err.message}`
+          error: 'UNSUPPORTED_PLATFORM',
+          message: '지원하지 않는 플랫폼입니다'
         });
+        return true;
       }
+
+      // Show more 버튼 클릭 후 DOM 업데이트 대기 -> 파싱
+      (async () => {
+        try {
+          // expandAllShowMore가 있는 파서만 (X) 호출
+          if (parser.expandAllShowMore) {
+            const clicked = parser.expandAllShowMore();
+            if (clicked > 0) {
+              await sleep(500); // React DOM 업데이트 대기
+            }
+          }
+
+          const options = request.options || {};
+          const tweets = parser.parseFeed(options);
+          const formatted = parser.formatOutput(tweets);
+          const platformInfo = parser.getPlatformInfo();
+
+          sendResponse({
+            success: true,
+            data: {
+              platform: platformInfo.name,
+              platformId: platformInfo.id,
+              count: tweets.length,
+              formatted,
+              raw: tweets
+            }
+          });
+        } catch (err) {
+          sendResponse({
+            success: false,
+            error: 'PARSE_ERROR',
+            message: `파싱 실패: ${err.message}`
+          });
+        }
+      })();
       
       return true;
     }
