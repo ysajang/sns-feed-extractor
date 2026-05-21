@@ -90,14 +90,13 @@
       await chrome.storage.local.remove(SCROLL_STOP_KEY);
       await setScrollStatus('running', allTweets.size);
 
-      // 페이지 최상단으로 이동
-      window.scrollTo({ top: 0, behavior: 'instant' });
-      await sleep(500);
+      // 최상단 이동 없음 — 현재 위치에서 아래로 스크롤
+      // seed 데이터로 현재 화면 결과를 이미 갖고 있음
 
       let noNewCount = 0;
-      const MAX_NO_NEW = 5;
+      const MAX_NO_NEW = 7;
       let scrollAttempts = 0;
-      const MAX_SCROLL_ATTEMPTS = 80;
+      const MAX_SCROLL_ATTEMPTS = 100;
 
       while (allTweets.size < maxCount && noNewCount < MAX_NO_NEW && scrollAttempts < MAX_SCROLL_ATTEMPTS) {
         // 중지 요청 확인
@@ -138,7 +137,7 @@
         // 스크롤 — 화면 90% 높이로 빠르게 이동
         window.scrollBy({ top: window.innerHeight * 0.9, behavior: 'instant' });
         // 새 포스트 없으면 로딩 대기 길게 / 있으면 짧게
-        await sleep(noNewCount > 0 ? 1000 : 600);
+        await sleep(noNewCount > 0 ? 1500 : 600);
         scrollAttempts++;
       }
 
