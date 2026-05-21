@@ -24,10 +24,10 @@
     "message": "Zatrzymaj"
   },
   "copy": {
-    "message": "📋 Kopiuj"
+    "message": "Kopiuj"
   },
   "copied": {
-    "message": "✅ Skopiowano"
+    "message": "Skopiowano"
   },
   "placeholder": {
     "message": "Wyodrębniony tekst pojawi się tutaj"
@@ -51,18 +51,18 @@
     "message": "Wyodrębniono $1 postów"
   },
   "extractDone": {
-    "message": "✅ Wyodrębniono $1 postów"
+    "message": "Wyodrębniono $1 postów"
   },
   "saved": {
     "message": "zapisano"
   },
   "scrollStart": {
-    "message": "🔄 Zbieranie przewijaniem... ($1 dotychczas)"
+    "message": "Zbieranie przewijaniem... ($1 dotychczas)"
   },
   "scrollError": {
     "message": "Błąd podczas zbierania"
   },
   "stopRequested": {
-    "message": "⏹ Zatrzymywanie... zapisywanie zebranych"
+    "message": "Zatrzymywanie... zapisywanie zebranych"
   }
 }

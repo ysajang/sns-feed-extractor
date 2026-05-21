@@ -24,10 +24,10 @@
     "message": "Dừng"
   },
   "copy": {
-    "message": "📋 Sao chép"
+    "message": "Sao chép"
   },
   "copied": {
-    "message": "✅ Đã sao chép"
+    "message": "Đã sao chép"
   },
   "placeholder": {
     "message": "Văn bản trích xuất sẽ hiển thị ở đây"
@@ -51,18 +51,18 @@
     "message": "Đã trích xuất $1 bài"
   },
   "extractDone": {
-    "message": "✅ Đã trích xuất $1 bài"
+    "message": "Đã trích xuất $1 bài"
   },
   "saved": {
     "message": "đã lưu"
   },
   "scrollStart": {
-    "message": "🔄 Đang cuộn thu thập... ($1 cho đến nay)"
+    "message": "Đang cuộn thu thập... ($1 cho đến nay)"
   },
   "scrollError": {
     "message": "Lỗi khi thu thập"
   },
   "stopRequested": {
-    "message": "⏹ Đang dừng... lưu phần đã thu thập"
+    "message": "Đang dừng... lưu phần đã thu thập"
   }
 }

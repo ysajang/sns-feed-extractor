@@ -24,10 +24,10 @@
     "message": "Berhenti"
   },
   "copy": {
-    "message": "📋 Salin"
+    "message": "Salin"
   },
   "copied": {
-    "message": "✅ Tersalin"
+    "message": "Tersalin"
   },
   "placeholder": {
     "message": "Teks yang diekstrak akan muncul di sini"
@@ -51,18 +51,18 @@
     "message": "$1 postingan diekstrak"
   },
   "extractDone": {
-    "message": "✅ $1 postingan diekstrak"
+    "message": "$1 postingan diekstrak"
   },
   "saved": {
     "message": "tersimpan"
   },
   "scrollStart": {
-    "message": "🔄 Mengumpulkan dengan scroll... ($1 sejauh ini)"
+    "message": "Mengumpulkan dengan scroll... ($1 sejauh ini)"
   },
   "scrollError": {
     "message": "Error saat pengumpulan"
   },
   "stopRequested": {
-    "message": "⏹ Menghentikan... menyimpan yang terkumpul"
+    "message": "Menghentikan... menyimpan yang terkumpul"
   }
 }

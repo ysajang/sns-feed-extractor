@@ -24,10 +24,10 @@
     "message": "중지"
   },
   "copy": {
-    "message": "📋 복사"
+    "message": "복사"
   },
   "copied": {
-    "message": "✅ 복사됨"
+    "message": "복사됨"
   },
   "placeholder": {
     "message": "추출 결과가 여기에 표시됩니다"
@@ -51,18 +51,18 @@
     "message": "$1개 추출"
   },
   "extractDone": {
-    "message": "✅ $1개 텍스트 추출 완료"
+    "message": "$1개 텍스트 추출 완료"
   },
   "saved": {
     "message": "저장됨"
   },
   "scrollStart": {
-    "message": "🔄 스크롤 수집 중... (현재 $1개)"
+    "message": "스크롤 수집 중... (현재 $1개)"
   },
   "scrollError": {
     "message": "스크롤 수집 중 오류 발생"
   },
   "stopRequested": {
-    "message": "⏹ 중지 요청됨... 수집된 부분까지 저장 중"
+    "message": "중지 요청됨... 수집된 부분까지 저장 중"
   }
 }

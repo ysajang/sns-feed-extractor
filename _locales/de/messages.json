@@ -24,10 +24,10 @@
     "message": "Stopp"
   },
   "copy": {
-    "message": "📋 Kopieren"
+    "message": "Kopieren"
   },
   "copied": {
-    "message": "✅ Kopiert"
+    "message": "Kopiert"
   },
   "placeholder": {
     "message": "Extrahierter Text wird hier angezeigt"
@@ -51,18 +51,18 @@
     "message": "$1 Beiträge extrahiert"
   },
   "extractDone": {
-    "message": "✅ $1 Beiträge extrahiert"
+    "message": "$1 Beiträge extrahiert"
   },
   "saved": {
     "message": "gespeichert"
   },
   "scrollStart": {
-    "message": "🔄 Scroll-Sammlung... ($1 bisher)"
+    "message": "Scroll-Sammlung... ($1 bisher)"
   },
   "scrollError": {
     "message": "Fehler bei der Scroll-Sammlung"
   },
   "stopRequested": {
-    "message": "⏹ Wird gestoppt... Gesammeltes wird gespeichert"
+    "message": "Wird gestoppt... Gesammeltes wird gespeichert"
   }
 }

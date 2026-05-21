@@ -24,10 +24,10 @@
     "message": "Durdur"
   },
   "copy": {
-    "message": "📋 Kopyala"
+    "message": "Kopyala"
   },
   "copied": {
-    "message": "✅ Kopyalandı"
+    "message": "Kopyalandı"
   },
   "placeholder": {
     "message": "Çıkarılan metin burada görünecek"
@@ -51,18 +51,18 @@
     "message": "$1 gönderi çıkarıldı"
   },
   "extractDone": {
-    "message": "✅ $1 gönderi çıkarıldı"
+    "message": "$1 gönderi çıkarıldı"
   },
   "saved": {
     "message": "kaydedildi"
   },
   "scrollStart": {
-    "message": "🔄 Kaydırarak toplama... (şu ana kadar $1)"
+    "message": "Kaydırarak toplama... (şu ana kadar $1)"
   },
   "scrollError": {
     "message": "Toplama sırasında hata"
   },
   "stopRequested": {
-    "message": "⏹ Durduruluyor... toplananlar kaydediliyor"
+    "message": "Durduruluyor... toplananlar kaydediliyor"
   }
 }

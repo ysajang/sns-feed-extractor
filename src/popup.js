@@ -155,10 +155,10 @@
             els.resultText.value = formatted;
             els.resultCount.textContent = `${platform} · ${t('postsExtracted', String(count))}`;
             els.resultArea.classList.remove('hidden');
-            showStatus('success', '', t('extractDone', String(count)));
+            showStatus('success', '✅', t('extractDone', String(count)));
             saveResult(platform, count, formatted);
           } else {
-            showStatus('error', '', sr?.message || t('extractFail'));
+            showStatus('error', '❌', sr?.message || t('extractFail'));
           }
           els.btnExtract.classList.remove('btn-loading');
           els.btnExtract.disabled = false;
@@ -167,7 +167,7 @@
         }
         if (status.status === 'error') {
           stopPolling();
-          showStatus('error', '', t('scrollError'));
+          showStatus('error', '❌', t('scrollError'));
           els.btnExtract.classList.remove('btn-loading');
           els.btnExtract.disabled = false;
           els.btnStop.classList.add('hidden');
@@ -191,7 +191,7 @@
     try {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       if (!tab?.id) {
-        showStatus('error', '', t('noTab'));
+        showStatus('error', '❌', t('noTab'));
         btn.classList.remove('btn-loading'); btn.disabled = false; return;
       }
 
@@ -207,20 +207,20 @@
       const response = await chrome.tabs.sendMessage(tab.id, { action: 'extractFeed', options });
 
       if (!response?.success) {
-        showStatus('error', '', response?.message || t('extractFail'));
+        showStatus('error', '❌', response?.message || t('extractFail'));
         btn.classList.remove('btn-loading'); btn.disabled = false; return;
       }
 
       if (response.data.count && response.data.formatted) {
         const { count, formatted, platform } = response.data;
         if (count === 0) {
-          showStatus('info', '', t('noText'));
+          showStatus('info', 'ℹ️', t('noText'));
           btn.classList.remove('btn-loading'); btn.disabled = false; return;
         }
         els.resultText.value = formatted;
         els.resultCount.textContent = `${platform} · ${t('postsExtracted', String(count))}`;
         els.resultArea.classList.remove('hidden');
-        showStatus('success', '', t('extractDone', String(count)));
+        showStatus('success', '✅', t('extractDone', String(count)));
         saveResult(platform, count, formatted);
         btn.classList.remove('btn-loading'); btn.disabled = false;
 
@@ -230,7 +230,7 @@
         startPolling();
       }
     } catch (err) {
-      showStatus('error', '', `${t('extractFail')}: ${err.message}`);
+      showStatus('error', '❌', `${t('extractFail')}: ${err.message}`);
       btn.classList.remove('btn-loading'); btn.disabled = false;
     }
   }
@@ -242,13 +242,13 @@
     try {
       await navigator.clipboard.writeText(text);
       els.btnCopy.classList.add('btn-copied');
-      els.btnCopy.textContent = t('copied');
-      setTimeout(() => { els.btnCopy.classList.remove('btn-copied'); els.btnCopy.textContent = t('copy'); }, 1500);
+      els.btnCopy.textContent = '✅ ' + t('copied');
+      setTimeout(() => { els.btnCopy.classList.remove('btn-copied'); els.btnCopy.textContent = '📋 ' + t('copy'); }, 1500);
     } catch {
       els.resultText.select();
       document.execCommand('copy');
-      els.btnCopy.textContent = t('copied');
-      setTimeout(() => { els.btnCopy.textContent = t('copy'); }, 1500);
+      els.btnCopy.textContent = '✅ ' + t('copied');
+      setTimeout(() => { els.btnCopy.textContent = '📋 ' + t('copy'); }, 1500);
     }
   }
 
@@ -256,7 +256,7 @@
   async function handleStop() {
     try {
       await chrome.storage.local.set({ [SCROLL_STOP_KEY]: true });
-      showStatus('info', '', t('stopRequested'));
+      showStatus('info', '⏹', t('stopRequested'));
     } catch { /* ignore */ }
   }
 

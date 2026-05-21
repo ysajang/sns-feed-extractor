@@ -24,10 +24,10 @@
     "message": "Stop"
   },
   "copy": {
-    "message": "📋 Copy"
+    "message": "Copy"
   },
   "copied": {
-    "message": "✅ Copied"
+    "message": "Copied"
   },
   "placeholder": {
     "message": "Extracted text will appear here"
@@ -51,18 +51,18 @@
     "message": "$1 posts extracted"
   },
   "extractDone": {
-    "message": "✅ $1 posts extracted"
+    "message": "$1 posts extracted"
   },
   "saved": {
     "message": "saved"
   },
   "scrollStart": {
-    "message": "🔄 Scroll collecting... ($1 so far)"
+    "message": "Scroll collecting... ($1 so far)"
   },
   "scrollError": {
     "message": "Error during scroll collection"
   },
   "stopRequested": {
-    "message": "⏹ Stopping... saving collected posts"
+    "message": "Stopping... saving collected posts"
   }
 }

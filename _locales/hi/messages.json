@@ -24,10 +24,10 @@
     "message": "रोकें"
   },
   "copy": {
-    "message": "📋 कॉपी"
+    "message": "कॉपी"
   },
   "copied": {
-    "message": "✅ कॉपी हो गया"
+    "message": "कॉपी हो गया"
   },
   "placeholder": {
     "message": "निकाला गया टेक्स्ट यहाँ दिखेगा"
@@ -51,18 +51,18 @@
     "message": "$1 पोस्ट निकाले गए"
   },
   "extractDone": {
-    "message": "✅ $1 पोस्ट निकाले गए"
+    "message": "$1 पोस्ट निकाले गए"
   },
   "saved": {
     "message": "सहेजा गया"
   },
   "scrollStart": {
-    "message": "🔄 स्क्रॉल कर रहा है... (अभी तक $1)"
+    "message": "स्क्रॉल कर रहा है... (अभी तक $1)"
   },
   "scrollError": {
     "message": "स्क्रॉल संग्रह में त्रुटि"
   },
   "stopRequested": {
-    "message": "⏹ रोक रहा है... एकत्रित सहेज रहा है"
+    "message": "रोक रहा है... एकत्रित सहेज रहा है"
   }
 }

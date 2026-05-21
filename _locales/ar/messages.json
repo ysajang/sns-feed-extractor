@@ -24,10 +24,10 @@
     "message": "إيقاف"
   },
   "copy": {
-    "message": "📋 نسخ"
+    "message": "نسخ"
   },
   "copied": {
-    "message": "✅ تم النسخ"
+    "message": "تم النسخ"
   },
   "placeholder": {
     "message": "سيظهر النص المستخرج هنا"
@@ -51,18 +51,18 @@
     "message": "تم استخراج $1 منشور"
   },
   "extractDone": {
-    "message": "✅ تم استخراج $1 منشور"
+    "message": "تم استخراج $1 منشور"
   },
   "saved": {
     "message": "محفوظ"
   },
   "scrollStart": {
-    "message": "🔄 جمع بالتمرير... ($1 حتى الآن)"
+    "message": "جمع بالتمرير... ($1 حتى الآن)"
   },
   "scrollError": {
     "message": "خطأ أثناء الجمع"
   },
   "stopRequested": {
-    "message": "⏹ جارٍ الإيقاف... حفظ ما تم جمعه"
+    "message": "جارٍ الإيقاف... حفظ ما تم جمعه"
   }
 }

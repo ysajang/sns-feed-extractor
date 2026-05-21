@@ -24,10 +24,10 @@
     "message": "Stoppen"
   },
   "copy": {
-    "message": "📋 Kopiëren"
+    "message": "Kopiëren"
   },
   "copied": {
-    "message": "✅ Gekopieerd"
+    "message": "Gekopieerd"
   },
   "placeholder": {
     "message": "Geëxtraheerde tekst verschijnt hier"
@@ -51,18 +51,18 @@
     "message": "$1 berichten geëxtraheerd"
   },
   "extractDone": {
-    "message": "✅ $1 berichten geëxtraheerd"
+    "message": "$1 berichten geëxtraheerd"
   },
   "saved": {
     "message": "opgeslagen"
   },
   "scrollStart": {
-    "message": "🔄 Verzamelen door scrollen... ($1 tot nu toe)"
+    "message": "Verzamelen door scrollen... ($1 tot nu toe)"
   },
   "scrollError": {
     "message": "Fout tijdens verzamelen"
   },
   "stopRequested": {
-    "message": "⏹ Stoppen... verzamelde opslaan"
+    "message": "Stoppen... verzamelde opslaan"
   }
 }

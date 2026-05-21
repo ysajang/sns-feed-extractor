@@ -24,10 +24,10 @@
     "message": "停止"
   },
   "copy": {
-    "message": "📋 复制"
+    "message": "复制"
   },
   "copied": {
-    "message": "✅ 已复制"
+    "message": "已复制"
   },
   "placeholder": {
     "message": "提取结果将显示在此处"
@@ -51,18 +51,18 @@
     "message": "已提取$1条"
   },
   "extractDone": {
-    "message": "✅ 已提取$1条文本"
+    "message": "已提取$1条文本"
   },
   "saved": {
     "message": "已保存"
   },
   "scrollStart": {
-    "message": "🔄 滚动收集中...（当前$1条）"
+    "message": "滚动收集中...（当前$1条）"
   },
   "scrollError": {
     "message": "滚动收集时出错"
   },
   "stopRequested": {
-    "message": "⏹ 正在停止...保存已收集内容"
+    "message": "正在停止...保存已收集内容"
   }
 }

@@ -24,10 +24,10 @@
     "message": "Detener"
   },
   "copy": {
-    "message": "📋 Copiar"
+    "message": "Copiar"
   },
   "copied": {
-    "message": "✅ Copiado"
+    "message": "Copiado"
   },
   "placeholder": {
     "message": "El texto extraído aparecerá aquí"
@@ -51,18 +51,18 @@
     "message": "$1 publicaciones extraídas"
   },
   "extractDone": {
-    "message": "✅ $1 publicaciones extraídas"
+    "message": "$1 publicaciones extraídas"
   },
   "saved": {
     "message": "guardado"
   },
   "scrollStart": {
-    "message": "🔄 Recopilando con scroll... ($1 hasta ahora)"
+    "message": "Recopilando con scroll... ($1 hasta ahora)"
   },
   "scrollError": {
     "message": "Error durante la recopilación"
   },
   "stopRequested": {
-    "message": "⏹ Deteniendo... guardando lo recopilado"
+    "message": "Deteniendo... guardando lo recopilado"
   }
 }
