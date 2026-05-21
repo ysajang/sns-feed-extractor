@@ -205,11 +205,34 @@ const QuoraParser = (() => {
     };
   }
 
+  /**
+   * "(more)" 버튼 클릭하여 잘린 답변 펼치기
+   * 셀렉터: .qt_read_more (Quora의 "read more" 버튼)
+   */
+  function expandAllShowMore() {
+    const buttons = document.querySelectorAll('.qt_read_more');
+    let clicked = 0;
+
+    for (const btn of buttons) {
+      try {
+        btn.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }));
+        btn.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true }));
+        btn.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+        clicked++;
+      } catch {
+        // ignore
+      }
+    }
+
+    return clicked;
+  }
+
   return {
     parseFeed,
     formatOutput,
     isActive,
     getPlatformInfo,
+    expandAllShowMore,
     SELECTORS
   };
 })();
