@@ -115,16 +115,14 @@
         await sleep(timing.seed);
       }
 
+      // 플랫폼별 스크롤 거리 배수 (Quora는 답변이 길어서 크게)
+      const scrollMultiplier = (platformId === 'quora') ? 3 : 1;
+
       while (allTweets.size < maxCount && noNewCount < MAX_NO_NEW && scrollAttempts < MAX_SCROLL_ATTEMPTS) {
         // 중지 요청 확인
         if (await shouldStop()) break;
-        // Show more / (more) 버튼 클릭
-        if (parser.expandAllShowMore) {
-          const clicked = parser.expandAllShowMore();
-          if (clicked > 0) await sleep(200);
-        }
 
-        // 현재 화면의 포스트 파싱
+        // 현재 화면의 포스트 파싱 (more는 클릭하지 않음 — 스크롤 중 펼치면 높이 폭증)
         const currentBatch = parser.parseFeed({
           ...options,
           maxCount: maxCount
@@ -151,11 +149,23 @@
         // 목표 달성 시 종료
         if (allTweets.size >= maxCount) break;
 
-        // 스크롤 — 화면 전체 높이로 이동
-        window.scrollBy({ top: window.innerHeight, behavior: 'instant' });
+        // 스크롤 — 플랫폼별 거리 조절
+        window.scrollBy({ top: window.innerHeight * scrollMultiplier, behavior: 'instant' });
         // 플랫폼별 적응형 대기
         await sleep(noNewCount > 2 ? timing.slow : timing.fast);
         scrollAttempts++;
+      }
+
+      // 스크롤 수집 완료 후 Show more / (more) 펼치기 (최종 1회)
+      if (parser.expandAllShowMore) {
+        const clicked = parser.expandAllShowMore();
+        if (clicked > 0) await sleep(500);
+        // 펼친 후 다시 파싱하여 전체 텍스트 갱신
+        const finalBatch = parser.parseFeed({ ...options, maxCount: maxCount });
+        for (const tweet of finalBatch) {
+          const key = tweet.text.substring(0, 120);
+          allTweets.set(key, tweet); // 기존 키 덮어쓰기 (펼쳐진 전체 텍스트로)
+        }
       }
 
       // 결과 저장
