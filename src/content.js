@@ -18,6 +18,7 @@
 
   const SCROLL_RESULT_KEY = 'sns_extractor_scroll_result';
   const SCROLL_STATUS_KEY = 'sns_extractor_scroll_status';
+  const SCROLL_STOP_KEY = 'sns_extractor_scroll_stop';
 
   /**
    * 현재 페이지에 맞는 파서 반환
@@ -56,14 +57,29 @@
   }
 
   /**
+   * 중지 플래그 확인
+   */
+  async function shouldStop() {
+    try {
+      const result = await chrome.storage.local.get(SCROLL_STOP_KEY);
+      return !!result[SCROLL_STOP_KEY];
+    } catch {
+      return false;
+    }
+  }
+
+  /**
    * 자동 스크롤하며 포스트 누적 수집
    * popup과 독립적으로 실행 — 결과를 storage에 저장
+   * 중지 요청 시 수집한 부분까지 결과 저장
    */
   async function scrollAndCollect(parser, options, platformInfo) {
     const maxCount = options.maxCount || 100;
     const allTweets = new Map();
 
     try {
+      // 중지 플래그 초기화
+      await chrome.storage.local.remove(SCROLL_STOP_KEY);
       await setScrollStatus('running', 0);
 
       // 페이지 최상단으로 이동
@@ -76,6 +92,8 @@
       const MAX_SCROLL_ATTEMPTS = 80;
 
       while (allTweets.size < maxCount && noNewCount < MAX_NO_NEW && scrollAttempts < MAX_SCROLL_ATTEMPTS) {
+        // 중지 요청 확인
+        if (await shouldStop()) break;
         // 현재 화면의 포스트 파싱
         const currentBatch = parser.parseFeed({
           ...options,

@@ -198,6 +198,17 @@ input[type="checkbox"]:checked + .toggle::after {
   cursor: not-allowed;
 }
 
+.btn-stop {
+  padding: 11px 14px;
+  font-size: 13px;
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.btn-stop:hover {
+  background: #dc2626;
+}
+
 .btn-small {
   padding: 5px 10px;
   font-size: 11px;

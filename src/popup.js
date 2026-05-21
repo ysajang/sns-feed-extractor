@@ -15,6 +15,7 @@
     platformIcon:   document.getElementById('platform-icon'),
     platformName:   document.getElementById('platform-name'),
     btnExtract:     document.getElementById('btn-extract'),
+    btnStop:        document.getElementById('btn-stop'),
     btnCopy:        document.getElementById('btn-copy'),
     resultArea:     document.getElementById('result-area'),
     resultCount:    document.getElementById('result-count'),
@@ -33,6 +34,7 @@
   const RESULT_KEY = 'sns_extractor_last_result';
   const SCROLL_RESULT_KEY = 'sns_extractor_scroll_result';
   const SCROLL_STATUS_KEY = 'sns_extractor_scroll_status';
+  const SCROLL_STOP_KEY = 'sns_extractor_scroll_stop';
 
   let pollInterval = null;
 
@@ -197,9 +199,10 @@
 
           els.btnExtract.classList.remove('btn-loading');
           els.btnExtract.disabled = false;
+          els.btnStop.classList.add('hidden');
 
           // 사용한 scroll 데이터 정리
-          chrome.storage.local.remove([SCROLL_STATUS_KEY, SCROLL_RESULT_KEY]);
+          chrome.storage.local.remove([SCROLL_STATUS_KEY, SCROLL_RESULT_KEY, SCROLL_STOP_KEY]);
         }
 
         if (status.status === 'error') {
@@ -207,7 +210,8 @@
           showStatus('error', '❌', '스크롤 수집 중 오류 발생');
           els.btnExtract.classList.remove('btn-loading');
           els.btnExtract.disabled = false;
-          chrome.storage.local.remove([SCROLL_STATUS_KEY, SCROLL_RESULT_KEY]);
+          els.btnStop.classList.add('hidden');
+          chrome.storage.local.remove([SCROLL_STATUS_KEY, SCROLL_RESULT_KEY, SCROLL_STOP_KEY]);
         }
 
       } catch {
@@ -254,8 +258,11 @@
         // ── 스크롤 수집: fire & forget + polling ──────────────
         showStatus('info', '🔄', '스크롤 수집 시작...');
 
-        // 이전 결과 정리
-        await chrome.storage.local.remove([SCROLL_STATUS_KEY, SCROLL_RESULT_KEY]);
+        // 이전 결과 + 중지 플래그 정리
+        await chrome.storage.local.remove([SCROLL_STATUS_KEY, SCROLL_RESULT_KEY, SCROLL_STOP_KEY]);
+
+        // 중지 버튼 표시
+        els.btnStop.classList.remove('hidden');
 
         const response = await chrome.tabs.sendMessage(tab.id, {
           action: 'extractWithScroll',
@@ -338,8 +345,19 @@
     }
   }
 
+  // ── 스크롤 중지 ────────────────────────────────────────────────
+  async function handleStop() {
+    try {
+      await chrome.storage.local.set({ [SCROLL_STOP_KEY]: true });
+      showStatus('info', '⏹', '중지 요청됨... 수집된 부분까지 저장 중');
+    } catch {
+      // 무시
+    }
+  }
+
   // ── 이벤트 바인딩 ─────────────────────────────────────────────
   els.btnExtract.addEventListener('click', handleExtract);
+  els.btnStop.addEventListener('click', handleStop);
   els.btnCopy.addEventListener('click', handleCopy);
 
   els.optRemoveLinks.addEventListener('change', saveSettings);
