@@ -90,6 +90,20 @@
       await chrome.storage.local.remove(SCROLL_STOP_KEY);
       await setScrollStatus('running', allTweets.size);
 
+      // 플랫폼별 스크롤 속도 설정
+      const platformId = platformInfo.id;
+      const TIMING = {
+        // X: 빠른 가상화 피드
+        x:       { fast: 400,  slow: 1200, seed: 800 },
+        // Threads: 중간
+        threads: { fast: 600,  slow: 1500, seed: 800 },
+        // Reddit: 느린 로딩
+        reddit:  { fast: 800,  slow: 2000, seed: 1000 },
+        // Quora: 가장 느림 — API rate limit 방지
+        quora:   { fast: 1000, slow: 2500, seed: 1200 }
+      };
+      const timing = TIMING[platformId] || { fast: 600, slow: 1500, seed: 800 };
+
       let noNewCount = 0;
       const MAX_NO_NEW = 10;
       let scrollAttempts = 0;
@@ -98,13 +112,13 @@
       // seed가 있으면 현재 화면은 이미 수집됨 -> 먼저 아래로 큰 스크롤
       if (seedResults && seedResults.length > 0) {
         window.scrollBy({ top: window.innerHeight * 2, behavior: 'instant' });
-        await sleep(800);
+        await sleep(timing.seed);
       }
 
       while (allTweets.size < maxCount && noNewCount < MAX_NO_NEW && scrollAttempts < MAX_SCROLL_ATTEMPTS) {
         // 중지 요청 확인
         if (await shouldStop()) break;
-        // Show more 버튼 클릭 (X 전용)
+        // Show more / (more) 버튼 클릭
         if (parser.expandAllShowMore) {
           const clicked = parser.expandAllShowMore();
           if (clicked > 0) await sleep(200);
@@ -139,8 +153,8 @@
 
         // 스크롤 — 화면 전체 높이로 이동
         window.scrollBy({ top: window.innerHeight, behavior: 'instant' });
-        // 새 포스트 없으면 로딩 대기 / 있으면 빠르게
-        await sleep(noNewCount > 2 ? 1200 : 400);
+        // 플랫폼별 적응형 대기
+        await sleep(noNewCount > 2 ? timing.slow : timing.fast);
         scrollAttempts++;
       }
 
