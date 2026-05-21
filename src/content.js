@@ -90,13 +90,16 @@
       await chrome.storage.local.remove(SCROLL_STOP_KEY);
       await setScrollStatus('running', allTweets.size);
 
-      // 최상단 이동 없음 — 현재 위치에서 아래로 스크롤
-      // seed 데이터로 현재 화면 결과를 이미 갖고 있음
-
       let noNewCount = 0;
-      const MAX_NO_NEW = 7;
+      const MAX_NO_NEW = 10;
       let scrollAttempts = 0;
-      const MAX_SCROLL_ATTEMPTS = 100;
+      const MAX_SCROLL_ATTEMPTS = 150;
+
+      // seed가 있으면 현재 화면은 이미 수집됨 -> 먼저 아래로 큰 스크롤
+      if (seedResults && seedResults.length > 0) {
+        window.scrollBy({ top: window.innerHeight * 2, behavior: 'instant' });
+        await sleep(800);
+      }
 
       while (allTweets.size < maxCount && noNewCount < MAX_NO_NEW && scrollAttempts < MAX_SCROLL_ATTEMPTS) {
         // 중지 요청 확인
@@ -104,7 +107,7 @@
         // Show more 버튼 클릭 (X 전용)
         if (parser.expandAllShowMore) {
           const clicked = parser.expandAllShowMore();
-          if (clicked > 0) await sleep(300);
+          if (clicked > 0) await sleep(200);
         }
 
         // 현재 화면의 포스트 파싱
@@ -134,10 +137,10 @@
         // 목표 달성 시 종료
         if (allTweets.size >= maxCount) break;
 
-        // 스크롤 — 화면 90% 높이로 빠르게 이동
-        window.scrollBy({ top: window.innerHeight * 0.9, behavior: 'instant' });
-        // 새 포스트 없으면 로딩 대기 길게 / 있으면 짧게
-        await sleep(noNewCount > 0 ? 1500 : 600);
+        // 스크롤 — 화면 전체 높이로 이동
+        window.scrollBy({ top: window.innerHeight, behavior: 'instant' });
+        // 새 포스트 없으면 로딩 대기 / 있으면 빠르게
+        await sleep(noNewCount > 2 ? 1200 : 400);
         scrollAttempts++;
       }
 
