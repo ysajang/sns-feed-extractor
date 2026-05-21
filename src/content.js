@@ -74,14 +74,21 @@
    * popup과 독립적으로 실행 — 결과를 storage에 저장
    * 중지 요청 시 수집한 부분까지 결과 저장
    */
-  async function scrollAndCollect(parser, options, platformInfo) {
+  async function scrollAndCollect(parser, options, platformInfo, seedResults) {
     const maxCount = options.maxCount || 100;
     const allTweets = new Map();
 
+    // seed 데이터로 초기화 (즉시 추출 결과)
+    if (seedResults && seedResults.length > 0) {
+      for (const tweet of seedResults) {
+        const key = tweet.text.substring(0, 120);
+        allTweets.set(key, tweet);
+      }
+    }
+
     try {
-      // 중지 플래그 초기화
       await chrome.storage.local.remove(SCROLL_STOP_KEY);
-      await setScrollStatus('running', 0);
+      await setScrollStatus('running', allTweets.size);
 
       // 페이지 최상단으로 이동
       window.scrollTo({ top: 0, behavior: 'instant' });
@@ -216,14 +223,14 @@
               }
             });
           } else {
-            // 부족 -> 스크롤 수집 시작 (fire & forget)
+            // 부족 -> 스크롤 수집 시작 (즉시 결과를 seed로 전달)
             sendResponse({
               success: true,
               data: { started: true, instantCount: instantResults.length }
             });
 
             await chrome.storage.local.remove(SCROLL_STOP_KEY);
-            scrollAndCollect(parser, options, platformInfo);
+            scrollAndCollect(parser, options, platformInfo, instantResults);
           }
         } catch (err) {
           sendResponse({
