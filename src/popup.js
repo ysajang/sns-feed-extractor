@@ -363,7 +363,13 @@
 
   els.optRemoveLinks.addEventListener('change', saveSettings);
   els.optIncludeAds.addEventListener('change', saveSettings);
-  els.optMaxCount.addEventListener('change', saveSettings);
+  els.optMaxCount.addEventListener('change', () => {
+    let val = parseInt(els.optMaxCount.value, 10);
+    if (isNaN(val) || val < 1) val = 1;
+    if (val > 500) val = 500;
+    els.optMaxCount.value = val;
+    saveSettings();
+  });
   els.optAutoScroll.addEventListener('change', saveSettings);
 
   // Get Updates -> welcome page
