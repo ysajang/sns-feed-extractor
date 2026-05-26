@@ -17,9 +17,10 @@
   if (window[GUARD_KEY]) return;
   window[GUARD_KEY] = true;
 
-  const SCROLL_RESULT_KEY = 'sns_extractor_scroll_result';
-  const SCROLL_STATUS_KEY = 'sns_extractor_scroll_status';
-  const SCROLL_STOP_KEY = 'sns_extractor_scroll_stop';
+  let activeTabId = null; // popup에서 전달받는 탭 ID
+  function scrollResultKey() { return `sns_scroll_result_${activeTabId || 'unknown'}`; }
+  function scrollStatusKey() { return `sns_scroll_status_${activeTabId || 'unknown'}`; }
+  function scrollStopKey() { return `sns_scroll_stop_${activeTabId || 'unknown'}`; }
 
   /**
    * 현재 페이지에 맞는 파서 반환
@@ -46,7 +47,7 @@
   async function setScrollStatus(status, count) {
     try {
       await chrome.storage.local.set({
-        [SCROLL_STATUS_KEY]: {
+        [scrollStatusKey()]: {
           status, // 'running' | 'done' | 'error'
           count,
           timestamp: Date.now()
@@ -62,8 +63,8 @@
    */
   async function shouldStop() {
     try {
-      const result = await chrome.storage.local.get(SCROLL_STOP_KEY);
-      return !!result[SCROLL_STOP_KEY];
+      const result = await chrome.storage.local.get(scrollStopKey());
+      return !!result[scrollStopKey()];
     } catch {
       return false;
     }
@@ -87,7 +88,7 @@
     }
 
     try {
-      await chrome.storage.local.remove(SCROLL_STOP_KEY);
+      await chrome.storage.local.remove(scrollStopKey());
       await setScrollStatus('running', allTweets.size);
 
       // 플랫폼별 스크롤 속도 설정
@@ -186,7 +187,7 @@
       const formatted = parser.formatOutput(tweets);
 
       await chrome.storage.local.set({
-        [SCROLL_RESULT_KEY]: {
+        [scrollResultKey()]: {
           success: true,
           data: {
             platform: platformInfo.name,
@@ -203,7 +204,7 @@
 
     } catch (err) {
       await chrome.storage.local.set({
-        [SCROLL_RESULT_KEY]: {
+        [scrollResultKey()]: {
           success: false,
           error: 'SCROLL_ERROR',
           message: `스크롤 수집 실패: ${err.message}`,
@@ -244,6 +245,9 @@
    */
   chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
     
+    // 탭 ID 수신 (popup에서 전달)
+    if (request.tabId) activeTabId = request.tabId;
+
     // ── 스마트 추출: 즉시 시도 -> 부족하면 스크롤 ─────────────────
     if (request.action === 'extractFeed') {
       const parser = getActiveParser();
@@ -294,7 +298,7 @@
               data: { started: true, instantCount: instantResults.length }
             });
 
-            await chrome.storage.local.remove(SCROLL_STOP_KEY);
+            await chrome.storage.local.remove(scrollStopKey());
             scrollAndCollect(parser, options, platformInfo, instantResults, keywordsStr);
           }
         } catch (err) {

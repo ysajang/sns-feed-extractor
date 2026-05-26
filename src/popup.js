@@ -44,13 +44,25 @@
   };
 
   // ── Storage Keys ──────────────────────────────────────────────
-  const STORAGE_KEY = 'sns_extractor_options';
-  const RESULT_KEY = 'sns_extractor_last_result';
-  const SCROLL_RESULT_KEY = 'sns_extractor_scroll_result';
-  const SCROLL_STATUS_KEY = 'sns_extractor_scroll_status';
-  const SCROLL_STOP_KEY = 'sns_extractor_scroll_stop';
+  const STORAGE_KEY = 'sns_extractor_options'; // 설정은 공유
+  
+  // 결과 + 스크롤 상태는 탭별 분리
+  let currentTabId = null;
+  function resultKey() { return `sns_result_${currentTabId}`; }
+  function scrollResultKey() { return `sns_scroll_result_${currentTabId}`; }
+  function scrollStatusKey() { return `sns_scroll_status_${currentTabId}`; }
+  function scrollStopKey() { return `sns_scroll_stop_${currentTabId}`; }
 
   let pollInterval = null;
+
+  async function resolveTabId() {
+    try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      currentTabId = tab?.id || 'unknown';
+    } catch {
+      currentTabId = 'unknown';
+    }
+  }
 
   // ── Settings ──────────────────────────────────────────────────
   async function loadSettings() {
@@ -83,15 +95,15 @@
   async function saveResult(platform, count, formatted) {
     try {
       await chrome.storage.local.set({
-        [RESULT_KEY]: { platform, count, formatted, timestamp: Date.now() }
+        [resultKey()]: { platform, count, formatted, timestamp: Date.now() }
       });
     } catch { /* ignore */ }
   }
 
   async function loadLastResult() {
     try {
-      const result = await chrome.storage.local.get(RESULT_KEY);
-      const saved = result[RESULT_KEY];
+      const result = await chrome.storage.local.get(resultKey());
+      const saved = result[resultKey()];
       if (saved && saved.formatted) {
         const oneHour = 60 * 60 * 1000;
         if (Date.now() - saved.timestamp < oneHour) {
@@ -122,7 +134,7 @@
       if (tab.url.startsWith('chrome://') || tab.url.startsWith('chrome-extension://')) {
         setPlatformState(false, '—', t('notAvailable')); return;
       }
-      const response = await chrome.tabs.sendMessage(tab.id, { action: 'getPlatformInfo' });
+      const response = await chrome.tabs.sendMessage(tab.id, { action: 'getPlatformInfo', tabId: tab.id });
       if (response?.success) {
         setPlatformState(true, response.data.icon, response.data.name);
       } else {
@@ -143,8 +155,8 @@
     if (pollInterval) clearInterval(pollInterval);
     pollInterval = setInterval(async () => {
       try {
-        const result = await chrome.storage.local.get([SCROLL_STATUS_KEY, SCROLL_RESULT_KEY]);
-        const status = result[SCROLL_STATUS_KEY];
+        const result = await chrome.storage.local.get([scrollStatusKey(), scrollResultKey()]);
+        const status = result[scrollStatusKey()];
         if (!status || Date.now() - status.timestamp > 120000) { stopPolling(); return; }
 
         if (status.status === 'running') {
@@ -152,7 +164,7 @@
         }
         if (status.status === 'done') {
           stopPolling();
-          const sr = result[SCROLL_RESULT_KEY];
+          const sr = result[scrollResultKey()];
           if (sr?.success) {
             const { count, formatted, platform } = sr.data;
             els.resultText.value = formatted;
@@ -166,7 +178,7 @@
           els.btnExtract.classList.remove('btn-loading');
           els.btnExtract.disabled = false;
           els.btnStop.classList.add('hidden');
-          chrome.storage.local.remove([SCROLL_STATUS_KEY, SCROLL_RESULT_KEY, SCROLL_STOP_KEY]);
+          chrome.storage.local.remove([scrollStatusKey(), scrollResultKey(), scrollStopKey()]);
         }
         if (status.status === 'error') {
           stopPolling();
@@ -174,7 +186,7 @@
           els.btnExtract.classList.remove('btn-loading');
           els.btnExtract.disabled = false;
           els.btnStop.classList.add('hidden');
-          chrome.storage.local.remove([SCROLL_STATUS_KEY, SCROLL_RESULT_KEY, SCROLL_STOP_KEY]);
+          chrome.storage.local.remove([scrollStatusKey(), scrollResultKey(), scrollStopKey()]);
         }
       } catch { /* ignore */ }
     }, 500);
@@ -206,9 +218,9 @@
         keywords: els.optKeywords.value.trim()
       };
       saveSettings();
-      await chrome.storage.local.remove([SCROLL_STATUS_KEY, SCROLL_RESULT_KEY, SCROLL_STOP_KEY]);
+      await chrome.storage.local.remove([scrollStatusKey(), scrollResultKey(), scrollStopKey()]);
 
-      const response = await chrome.tabs.sendMessage(tab.id, { action: 'extractFeed', options });
+      const response = await chrome.tabs.sendMessage(tab.id, { action: 'extractFeed', options, tabId: tab.id });
 
       if (!response?.success) {
         showStatus('error', '❌', response?.message || t('extractFail'));
@@ -259,7 +271,7 @@
   // ── Stop scroll ───────────────────────────────────────────────
   async function handleStop() {
     try {
-      await chrome.storage.local.set({ [SCROLL_STOP_KEY]: true });
+      await chrome.storage.local.set({ [scrollStopKey()]: true });
       showStatus('info', '⏹', t('stopRequested'));
     } catch { /* ignore */ }
   }
@@ -299,12 +311,13 @@
 
   // ── Init ──────────────────────────────────────────────────────
   async function init() {
+    await resolveTabId();
     await loadSettings();
     await loadLastResult();
     await detectPlatform();
     try {
-      const result = await chrome.storage.local.get(SCROLL_STATUS_KEY);
-      const status = result[SCROLL_STATUS_KEY];
+      const result = await chrome.storage.local.get(scrollStatusKey());
+      const status = result[scrollStatusKey()];
       if (status && status.status === 'running' && Date.now() - status.timestamp < 120000) {
         els.btnExtract.classList.add('btn-loading');
         els.btnExtract.disabled = true;
