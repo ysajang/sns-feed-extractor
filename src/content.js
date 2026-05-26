@@ -106,9 +106,12 @@
       const timing = TIMING[platformId] || { fast: 600, slow: 1500, seed: 800 };
 
       let noNewCount = 0;
-      const MAX_NO_NEW = 10;
       let scrollAttempts = 0;
-      const MAX_SCROLL_ATTEMPTS = 150;
+      const MAX_SCROLL_ATTEMPTS = 200;
+
+      // 비활성 탭 감지 -> 더 관대한 설정
+      const isBackgroundTab = document.hidden;
+      const MAX_NO_NEW = isBackgroundTab ? 20 : 10;
 
       // seed가 있으면 현재 화면은 이미 수집됨 -> 먼저 아래로 큰 스크롤
       if (seedResults && seedResults.length > 0) {
@@ -119,10 +122,10 @@
       // 플랫폼별 스크롤 거리 배수 (Quora는 답변이 길어서 크게)
       const scrollMultiplier = (platformId === 'quora') ? 3 : 1;
       const hasKeywords = keywordsStr && keywordsStr.trim().length > 0;
+      let scrollPosition = window.scrollY; // 절대 위치 추적
 
       /**
        * 키워드 필터 적용 후 매칭 수 계산
-       * 키워드 없으면 전체 수 반환
        */
       function getMatchedCount() {
         if (!hasKeywords) return allTweets.size;
@@ -133,10 +136,10 @@
         // 중지 요청 확인
         if (await shouldStop()) break;
 
-        // 현재 화면의 포스트 파싱 (more는 클릭하지 않음 — 스크롤 중 펼치면 높이 폭증)
+        // 현재 화면의 포스트 파싱
         const currentBatch = parser.parseFeed({
           ...options,
-          maxCount: maxCount * (hasKeywords ? 5 : 1) // 키워드 필터 시 더 많이 수집
+          maxCount: maxCount * (hasKeywords ? 5 : 1)
         });
 
         let newCount = 0;
@@ -154,17 +157,19 @@
           noNewCount = 0;
         }
 
-        // 진행 상태 업데이트 (키워드 매칭 수 표시)
+        // 진행 상태 업데이트
         const matchedSoFar = getMatchedCount();
         await setScrollStatus('running', matchedSoFar);
 
-        // 목표 달성 시 종료
         if (matchedSoFar >= maxCount) break;
 
-        // 스크롤 — 플랫폼별 거리 조절
-        window.scrollBy({ top: window.innerHeight * scrollMultiplier, behavior: 'instant' });
-        // 플랫폼별 적응형 대기
-        await sleep(noNewCount > 2 ? timing.slow : timing.fast);
+        // 스크롤 — 절대 위치로 이동 (비활성 탭에서도 확실하게 동작)
+        scrollPosition += window.innerHeight * scrollMultiplier;
+        window.scrollTo({ top: scrollPosition, behavior: 'instant' });
+
+        // 비활성 탭이면 대기 시간 늘림 (throttle 대응)
+        const bgMultiplier = document.hidden ? 2 : 1;
+        await sleep((noNewCount > 2 ? timing.slow : timing.fast) * bgMultiplier);
         scrollAttempts++;
       }
 
