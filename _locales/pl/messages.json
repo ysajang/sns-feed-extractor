@@ -64,5 +64,11 @@
   },
   "stopRequested": {
     "message": "Zatrzymywanie... zapisywanie zebranych"
+  },
+  "keywordFilter": {
+    "message": "Filtr słów kluczowych"
+  },
+  "keywordPlaceholder": {
+    "message": "np: dream, astrology (rozdzielone przecinkiem)"
   }
 }

@@ -39,7 +39,8 @@
     optIncludeAds:  document.getElementById('opt-include-ads'),
     optMaxCount:    document.getElementById('opt-max-count'),
     optMaxDown:     document.getElementById('opt-max-down'),
-    optMaxUp:       document.getElementById('opt-max-up')
+    optMaxUp:       document.getElementById('opt-max-up'),
+    optKeywords:    document.getElementById('opt-keywords')
   };
 
   // ── Storage Keys ──────────────────────────────────────────────
@@ -60,6 +61,7 @@
         if (typeof saved.removeLinks === 'boolean') els.optRemoveLinks.checked = saved.removeLinks;
         if (typeof saved.includeAds === 'boolean') els.optIncludeAds.checked = saved.includeAds;
         if (saved.maxCount) els.optMaxCount.value = String(saved.maxCount);
+        if (saved.keywords) els.optKeywords.value = saved.keywords;
       }
     } catch { /* default */ }
   }
@@ -70,7 +72,8 @@
         [STORAGE_KEY]: {
           removeLinks: els.optRemoveLinks.checked,
           includeAds: els.optIncludeAds.checked,
-          maxCount: parseInt(els.optMaxCount.value, 10)
+          maxCount: parseInt(els.optMaxCount.value, 10),
+          keywords: els.optKeywords.value.trim()
         }
       });
     } catch { /* ignore */ }
@@ -199,7 +202,8 @@
       const options = {
         removeLinks: els.optRemoveLinks.checked,
         includePromoted: els.optIncludeAds.checked,
-        maxCount: Math.min(200, Math.max(1, rawMax))
+        maxCount: Math.min(200, Math.max(1, rawMax)),
+        keywords: els.optKeywords.value.trim()
       };
       saveSettings();
       await chrome.storage.local.remove([SCROLL_STATUS_KEY, SCROLL_RESULT_KEY, SCROLL_STOP_KEY]);
@@ -283,6 +287,7 @@
   }
   els.optMaxDown.addEventListener('click', (e) => { e.preventDefault(); stepMaxCount(-10); });
   els.optMaxUp.addEventListener('click', (e) => { e.preventDefault(); stepMaxCount(10); });
+  els.optKeywords.addEventListener('change', saveSettings);
 
   const linkUpdates = document.getElementById('link-updates');
   if (linkUpdates) {

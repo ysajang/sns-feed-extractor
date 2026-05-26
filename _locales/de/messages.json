@@ -64,5 +64,11 @@
   },
   "stopRequested": {
     "message": "Wird gestoppt... Gesammeltes wird gespeichert"
+  },
+  "keywordFilter": {
+    "message": "Stichwortfilter"
+  },
+  "keywordPlaceholder": {
+    "message": "z.B. dream, astrology (kommagetrennt)"
   }
 }

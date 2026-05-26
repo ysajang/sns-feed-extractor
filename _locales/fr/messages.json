@@ -64,5 +64,11 @@
   },
   "stopRequested": {
     "message": "Arrêt en cours... sauvegarde"
+  },
+  "keywordFilter": {
+    "message": "Filtre par mots-clés"
+  },
+  "keywordPlaceholder": {
+    "message": "ex: dream, astrology (séparés par virgule)"
   }
 }

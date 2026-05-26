@@ -64,5 +64,11 @@
   },
   "stopRequested": {
     "message": "Đang dừng... lưu phần đã thu thập"
+  },
+  "keywordFilter": {
+    "message": "Lọc từ khóa"
+  },
+  "keywordPlaceholder": {
+    "message": "vd: dream, astrology (phân cách bằng dấu phẩy)"
   }
 }

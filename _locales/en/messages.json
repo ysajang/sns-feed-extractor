@@ -64,5 +64,11 @@
   },
   "stopRequested": {
     "message": "Stopping... saving collected posts"
+  },
+  "keywordFilter": {
+    "message": "Keyword filter"
+  },
+  "keywordPlaceholder": {
+    "message": "e.g. dream, astrology (comma separated)"
   }
 }

@@ -64,5 +64,11 @@
   },
   "stopRequested": {
     "message": "Menghentikan... menyimpan yang terkumpul"
+  },
+  "keywordFilter": {
+    "message": "Filter kata kunci"
+  },
+  "keywordPlaceholder": {
+    "message": "cth: dream, astrology (pisahkan dengan koma)"
   }
 }

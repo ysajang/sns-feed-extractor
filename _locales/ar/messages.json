@@ -64,5 +64,11 @@
   },
   "stopRequested": {
     "message": "جارٍ الإيقاف... حفظ ما تم جمعه"
+  },
+  "keywordFilter": {
+    "message": "تصفية بالكلمات"
+  },
+  "keywordPlaceholder": {
+    "message": "مثال: dream, astrology (مفصولة بفواصل)"
   }
 }

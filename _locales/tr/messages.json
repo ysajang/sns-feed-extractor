@@ -64,5 +64,11 @@
   },
   "stopRequested": {
     "message": "Durduruluyor... toplananlar kaydediliyor"
+  },
+  "keywordFilter": {
+    "message": "Anahtar kelime filtresi"
+  },
+  "keywordPlaceholder": {
+    "message": "örn: dream, astrology (virgülle ayırın)"
   }
 }

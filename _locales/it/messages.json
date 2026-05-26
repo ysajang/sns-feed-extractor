@@ -64,5 +64,11 @@
   },
   "stopRequested": {
     "message": "Arresto in corso... salvataggio"
+  },
+  "keywordFilter": {
+    "message": "Filtro parole chiave"
+  },
+  "keywordPlaceholder": {
+    "message": "es: dream, astrology (separati da virgola)"
   }
 }

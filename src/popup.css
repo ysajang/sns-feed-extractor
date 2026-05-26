@@ -140,6 +140,34 @@ input[type="checkbox"]:checked + .toggle::after {
   background: #1d9bf0;
 }
 
+/* Column layout setting row */
+.setting-row-col {
+  flex-direction: column;
+  align-items: flex-start !important;
+  gap: 6px;
+}
+
+/* Keyword input */
+.keyword-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  color: #e4e4e4;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-family: inherit;
+  outline: none;
+}
+
+.keyword-input:focus {
+  border-color: rgba(29, 155, 240, 0.4);
+}
+
+.keyword-input::placeholder {
+  color: #555;
+}
+
 /* Select & Number Input */
 .setting-row select,
 .setting-row input[type="number"] {

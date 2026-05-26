@@ -64,5 +64,11 @@
   },
   "stopRequested": {
     "message": "กำลังหยุด... บันทึกที่เก็บแล้ว"
+  },
+  "keywordFilter": {
+    "message": "กรองคำค้น"
+  },
+  "keywordPlaceholder": {
+    "message": "เช่น: dream, astrology (คั่นด้วยเครื่องหมายจุลภาค)"
   }
 }

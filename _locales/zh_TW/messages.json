@@ -64,5 +64,11 @@
   },
   "stopRequested": {
     "message": "正在停止...儲存已收集內容"
+  },
+  "keywordFilter": {
+    "message": "關鍵詞篩選"
+  },
+  "keywordPlaceholder": {
+    "message": "例：dream, astrology（逗號分隔）"
   }
 }

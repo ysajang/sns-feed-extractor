@@ -64,5 +64,11 @@
   },
   "stopRequested": {
     "message": "Stoppen... verzamelde opslaan"
+  },
+  "keywordFilter": {
+    "message": "Zoekwoordfilter"
+  },
+  "keywordPlaceholder": {
+    "message": "bijv: dream, astrology (gescheiden door komma)"
   }
 }

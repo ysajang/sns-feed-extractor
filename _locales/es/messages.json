@@ -64,5 +64,11 @@
   },
   "stopRequested": {
     "message": "Deteniendo... guardando lo recopilado"
+  },
+  "keywordFilter": {
+    "message": "Filtro por palabras"
+  },
+  "keywordPlaceholder": {
+    "message": "ej: dream, astrology (separados por coma)"
   }
 }

@@ -64,5 +64,11 @@
   },
   "stopRequested": {
     "message": "रोक रहा है... एकत्रित सहेज रहा है"
+  },
+  "keywordFilter": {
+    "message": "कीवर्ड फ़िल्टर"
+  },
+  "keywordPlaceholder": {
+    "message": "उदा: dream, astrology (अल्पविराम से अलग)"
   }
 }

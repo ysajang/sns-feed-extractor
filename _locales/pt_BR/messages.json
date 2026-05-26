@@ -64,5 +64,11 @@
   },
   "stopRequested": {
     "message": "Parando... salvando o coletado"
+  },
+  "keywordFilter": {
+    "message": "Filtro por palavras"
+  },
+  "keywordPlaceholder": {
+    "message": "ex: dream, astrology (separados por vírgula)"
   }
 }

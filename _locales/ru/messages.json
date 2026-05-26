@@ -64,5 +64,11 @@
   },
   "stopRequested": {
     "message": "Остановка... сохранение собранного"
+  },
+  "keywordFilter": {
+    "message": "Фильтр по словам"
+  },
+  "keywordPlaceholder": {
+    "message": "напр: dream, astrology (через запятую)"
   }
 }

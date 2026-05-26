@@ -64,5 +64,11 @@
   },
   "stopRequested": {
     "message": "중지 요청됨... 수집된 부분까지 저장 중"
+  },
+  "keywordFilter": {
+    "message": "키워드 필터"
+  },
+  "keywordPlaceholder": {
+    "message": "예: dream, astrology (쉼표 구분)"
   }
 }

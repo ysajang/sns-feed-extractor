@@ -64,5 +64,11 @@
   },
   "stopRequested": {
     "message": "停止要求... 収集分を保存中"
+  },
+  "keywordFilter": {
+    "message": "キーワードフィルター"
+  },
+  "keywordPlaceholder": {
+    "message": "例: dream, astrology（カンマ区切り）"
   }
 }

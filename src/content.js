@@ -74,7 +74,7 @@
    * popup과 독립적으로 실행 — 결과를 storage에 저장
    * 중지 요청 시 수집한 부분까지 결과 저장
    */
-  async function scrollAndCollect(parser, options, platformInfo, seedResults) {
+  async function scrollAndCollect(parser, options, platformInfo, seedResults, keywordsStr) {
     const maxCount = options.maxCount || 100;
     const allTweets = new Map();
 
@@ -168,8 +168,10 @@
         }
       }
 
-      // 결과 저장
-      const tweets = [...allTweets.values()].slice(0, maxCount);
+      // 결과 저장 (키워드 필터 적용)
+      const allResults = [...allTweets.values()];
+      const filtered = filterByKeywords(allResults, keywordsStr);
+      const tweets = filtered.slice(0, maxCount);
       const formatted = parser.formatOutput(tweets);
 
       await chrome.storage.local.set({
@@ -203,6 +205,30 @@
   }
 
   /**
+   * 키워드 필터링 — OR 방식 / 대소문자 무시
+   * @param {Array} tweets - [{handle, time, text}]
+   * @param {string} keywordsStr - 쉼표 구분 키워드 문자열
+   * @returns {Array} 필터링된 결과
+   */
+  function filterByKeywords(tweets, keywordsStr) {
+    if (!keywordsStr || !keywordsStr.trim()) return tweets;
+    
+    const keywords = keywordsStr
+      .split(',')
+      .map(k => k.trim().toLowerCase())
+      .filter(k => k.length > 0);
+    
+    if (keywords.length === 0) return tweets;
+    
+    return tweets.filter(tweet => {
+      const text = (tweet.text || '').toLowerCase();
+      const handle = (tweet.handle || '').toLowerCase();
+      const combined = `${handle} ${text}`;
+      return keywords.some(kw => combined.includes(kw));
+    });
+  }
+
+  /**
    * 메시지 핸들러
    */
   chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
@@ -222,6 +248,7 @@
 
       const options = request.options || {};
       const maxCount = options.maxCount || 50;
+      const keywordsStr = options.keywords || '';
       const platformInfo = parser.getPlatformInfo();
 
       (async () => {
@@ -233,7 +260,8 @@
           }
 
           // 1차: 현재 DOM에서 즉시 추출
-          const instantResults = parser.parseFeed(options);
+          const rawResults = parser.parseFeed(options);
+          const instantResults = filterByKeywords(rawResults, keywordsStr);
 
           if (instantResults.length >= maxCount) {
             // 충분 -> 즉시 반환
@@ -256,7 +284,7 @@
             });
 
             await chrome.storage.local.remove(SCROLL_STOP_KEY);
-            scrollAndCollect(parser, options, platformInfo, instantResults);
+            scrollAndCollect(parser, options, platformInfo, instantResults, keywordsStr);
           }
         } catch (err) {
           sendResponse({
