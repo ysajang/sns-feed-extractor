@@ -117,15 +117,25 @@
 
       // 플랫폼별 스크롤 거리 배수 (Quora는 답변이 길어서 크게)
       const scrollMultiplier = (platformId === 'quora') ? 3 : 1;
+      const hasKeywords = keywordsStr && keywordsStr.trim().length > 0;
 
-      while (allTweets.size < maxCount && noNewCount < MAX_NO_NEW && scrollAttempts < MAX_SCROLL_ATTEMPTS) {
+      /**
+       * 키워드 필터 적용 후 매칭 수 계산
+       * 키워드 없으면 전체 수 반환
+       */
+      function getMatchedCount() {
+        if (!hasKeywords) return allTweets.size;
+        return filterByKeywords([...allTweets.values()], keywordsStr).length;
+      }
+
+      while (getMatchedCount() < maxCount && noNewCount < MAX_NO_NEW && scrollAttempts < MAX_SCROLL_ATTEMPTS) {
         // 중지 요청 확인
         if (await shouldStop()) break;
 
         // 현재 화면의 포스트 파싱 (more는 클릭하지 않음 — 스크롤 중 펼치면 높이 폭증)
         const currentBatch = parser.parseFeed({
           ...options,
-          maxCount: maxCount
+          maxCount: maxCount * (hasKeywords ? 5 : 1) // 키워드 필터 시 더 많이 수집
         });
 
         let newCount = 0;
@@ -143,11 +153,12 @@
           noNewCount = 0;
         }
 
-        // 진행 상태 업데이트
-        await setScrollStatus('running', allTweets.size);
+        // 진행 상태 업데이트 (키워드 매칭 수 표시)
+        const matchedSoFar = getMatchedCount();
+        await setScrollStatus('running', matchedSoFar);
 
         // 목표 달성 시 종료
-        if (allTweets.size >= maxCount) break;
+        if (matchedSoFar >= maxCount) break;
 
         // 스크롤 — 플랫폼별 거리 조절
         window.scrollBy({ top: window.innerHeight * scrollMultiplier, behavior: 'instant' });
