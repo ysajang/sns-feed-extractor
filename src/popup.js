@@ -67,14 +67,16 @@
   // ── Settings ──────────────────────────────────────────────────
   async function loadSettings() {
     try {
-      const result = await chrome.storage.local.get(STORAGE_KEY);
+      const result = await chrome.storage.local.get([STORAGE_KEY, `sns_keywords_${currentTabId}`]);
       const saved = result[STORAGE_KEY];
       if (saved) {
         if (typeof saved.removeLinks === 'boolean') els.optRemoveLinks.checked = saved.removeLinks;
         if (typeof saved.includeAds === 'boolean') els.optIncludeAds.checked = saved.includeAds;
         if (saved.maxCount) els.optMaxCount.value = String(saved.maxCount);
-        if (saved.keywords) els.optKeywords.value = saved.keywords;
       }
+      // 키워드는 탭별
+      const kw = result[`sns_keywords_${currentTabId}`];
+      if (kw) els.optKeywords.value = kw;
     } catch { /* default */ }
   }
 
@@ -84,9 +86,9 @@
         [STORAGE_KEY]: {
           removeLinks: els.optRemoveLinks.checked,
           includeAds: els.optIncludeAds.checked,
-          maxCount: parseInt(els.optMaxCount.value, 10),
-          keywords: els.optKeywords.value.trim()
-        }
+          maxCount: parseInt(els.optMaxCount.value, 10)
+        },
+        [`sns_keywords_${currentTabId}`]: els.optKeywords.value.trim()
       });
     } catch { /* ignore */ }
   }
