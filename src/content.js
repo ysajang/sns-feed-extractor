@@ -132,7 +132,7 @@
         return filterByKeywords([...allTweets.values()], keywordsStr).length;
       }
 
-      while (getMatchedCount() < maxCount && noNewCount < MAX_NO_NEW && scrollAttempts < MAX_SCROLL_ATTEMPTS) {
+      while (getMatchedCount() < maxCount && scrollAttempts < MAX_SCROLL_ATTEMPTS) {
         // 중지 요청 확인
         if (await shouldStop()) break;
 
@@ -163,13 +163,28 @@
 
         if (matchedSoFar >= maxCount) break;
 
-        // 스크롤 — 절대 위치로 이동 (비활성 탭에서도 확실하게 동작)
+        // 스크롤 — 절대 위치로 이동
+        const prevHeight = document.documentElement.scrollHeight;
         scrollPosition += window.innerHeight * scrollMultiplier;
         window.scrollTo({ top: scrollPosition, behavior: 'instant' });
 
-        // 비활성 탭이면 대기 시간 늘림 (throttle 대응)
+        // 비활성 탭이면 대기 시간 늘림
         const bgMultiplier = document.hidden ? 2 : 1;
         await sleep((noNewCount > 2 ? timing.slow : timing.fast) * bgMultiplier);
+
+        // 피드 끝 판정: 페이지 높이가 안 늘어나고 + 새 포스트도 없으면 진짜 끝
+        const currentHeight = document.documentElement.scrollHeight;
+        const atBottom = (scrollPosition + window.innerHeight) >= currentHeight;
+        
+        if (atBottom && newCount === 0 && prevHeight === currentHeight) {
+          // 진짜 끝에 도달 — 한번 더 기다려보고 확인
+          await sleep(timing.slow * bgMultiplier);
+          const finalHeight = document.documentElement.scrollHeight;
+          if (finalHeight === currentHeight) {
+            break; // 피드 진짜 끝
+          }
+        }
+        
         scrollAttempts++;
       }
 
