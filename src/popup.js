@@ -159,7 +159,7 @@
       try {
         const result = await chrome.storage.local.get([scrollStatusKey(), scrollResultKey()]);
         const status = result[scrollStatusKey()];
-        if (!status || Date.now() - status.timestamp > 120000) { stopPolling(); return; }
+        if (!status || Date.now() - status.timestamp > 300000) { stopPolling(); return; }
 
         if (status.status === 'running') {
           showStatus('info', '🔄', t('scrollStart', String(status.count)));
@@ -318,14 +318,31 @@
     await loadLastResult();
     await detectPlatform();
     try {
-      const result = await chrome.storage.local.get(scrollStatusKey());
+      const result = await chrome.storage.local.get([scrollStatusKey(), scrollResultKey()]);
       const status = result[scrollStatusKey()];
-      if (status && status.status === 'running' && Date.now() - status.timestamp < 120000) {
-        els.btnExtract.classList.add('btn-loading');
-        els.btnExtract.disabled = true;
-        els.btnStop.classList.remove('hidden');
-        showStatus('info', '🔄', t('scrollStart', String(status.count)));
-        startPolling();
+      
+      if (status && Date.now() - status.timestamp < 300000) { // 5분 이내
+        if (status.status === 'running') {
+          // 진행 중 -> polling 재개
+          els.btnExtract.classList.add('btn-loading');
+          els.btnExtract.disabled = true;
+          els.btnStop.classList.remove('hidden');
+          showStatus('info', '🔄', t('scrollStart', String(status.count)));
+          startPolling();
+          
+        } else if (status.status === 'done') {
+          // popup 닫혀있는 동안 수집 완료됨 -> 결과 표시
+          const sr = result[scrollResultKey()];
+          if (sr?.success) {
+            const { count, formatted, platform } = sr.data;
+            els.resultText.value = formatted;
+            els.resultCount.textContent = `${platform} · ${t('postsExtracted', String(count))}`;
+            els.resultArea.classList.remove('hidden');
+            showStatus('success', '✅', t('extractDone', String(count)));
+            saveResult(platform, count, formatted);
+          }
+          chrome.storage.local.remove([scrollStatusKey(), scrollResultKey(), scrollStopKey()]);
+        }
       }
     } catch { /* ignore */ }
   }

@@ -172,17 +172,31 @@
         const bgMultiplier = document.hidden ? 2 : 1;
         await sleep((noNewCount > 2 ? timing.slow : timing.fast) * bgMultiplier);
 
-        // 피드 끝 판정: 페이지 높이가 안 늘어나고 + 새 포스트도 없으면 진짜 끝
+        // 피드 끝 판정: 플랫폼별 재시도 횟수로 확인
         const currentHeight = document.documentElement.scrollHeight;
         const atBottom = (scrollPosition + window.innerHeight) >= currentHeight;
         
         if (atBottom && newCount === 0 && prevHeight === currentHeight) {
-          // 진짜 끝에 도달 — 한번 더 기다려보고 확인
-          await sleep(timing.slow * bgMultiplier);
-          const finalHeight = document.documentElement.scrollHeight;
-          if (finalHeight === currentHeight) {
-            break; // 피드 진짜 끝
+          // 느린 플랫폼일수록 더 많이 재시도
+          const END_RETRIES = { x: 2, threads: 4, reddit: 3, quora: 4 };
+          const maxRetries = END_RETRIES[platformId] || 3;
+          let isRealEnd = true;
+          
+          for (let retry = 0; retry < maxRetries; retry++) {
+            await sleep(timing.slow * bgMultiplier);
+            // 스크롤 한번 더 시도 (로딩 트리거)
+            window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' });
+            await sleep(timing.fast * bgMultiplier);
+            
+            const retryHeight = document.documentElement.scrollHeight;
+            if (retryHeight > currentHeight) {
+              scrollPosition = retryHeight - window.innerHeight;
+              isRealEnd = false;
+              break;
+            }
           }
+          
+          if (isRealEnd) break;
         }
         
         scrollAttempts++;
