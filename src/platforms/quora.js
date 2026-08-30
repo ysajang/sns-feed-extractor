@@ -95,6 +95,21 @@ const QuoraParser = (() => {
   }
 
   /**
+   * 댓글 수 추출
+   * button[aria-label="408 comments"] 또는 "1 comment"
+   */
+  function extractCommentCount(postEl) {
+    const btn = postEl.querySelector('button[aria-label*="comment"]');
+    if (!btn) return null;
+
+    const label = btn.getAttribute('aria-label') || '';
+    const match = label.match(/([\d,.]+[KkMm]?)\s*comment/i);
+    if (match) return match[1];
+
+    return null;
+  }
+
+  /**
    * 답변 본문 추출
    * - (more) 링크 텍스트 제거
    * - UI 텍스트 제거
@@ -153,6 +168,7 @@ const QuoraParser = (() => {
       const time = extractTime(post);
       const question = extractQuestion(post);
       const answer = extractAnswer(post, { removeLinks });
+      const comments = extractCommentCount(post);
 
       // 최소한 질문이나 답변이 있어야 함
       if (!question && !answer) continue;
@@ -172,7 +188,8 @@ const QuoraParser = (() => {
         results.push({
           handle: `@${username}`,
           time,
-          text
+          text,
+          comments
         });
       }
     }
@@ -184,8 +201,10 @@ const QuoraParser = (() => {
     if (!tweets || tweets.length === 0) return '';
 
     return tweets.map(t => {
-      const header = t.time ? `${t.handle} · ${t.time}` : t.handle;
-      return `${header}\n${t.text}`;
+      const parts = [t.handle];
+      if (t.time) parts.push(t.time);
+      if (t.comments) parts.push(`💬 ${t.comments}`);
+      return `${parts.join(' · ')}\n${t.text}`;
     }).join('\n\n');
   }
 

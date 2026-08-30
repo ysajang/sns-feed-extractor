@@ -190,6 +190,31 @@ const XParser = (() => {
    * @param {number} options.maxCount - 최대 추출 수 (default: 100)
    * @returns {Array<{handle: string, time: string, text: string}>}
    */
+  /**
+   * 댓글(답글) 수 추출
+   * [data-testid="reply"] 버튼 내부 숫자
+   * aria-label에 "N replies" 형태로도 존재
+   */
+  function extractCommentCount(article) {
+    const replyBtn = article.querySelector('[data-testid="reply"]');
+    if (!replyBtn) return null;
+
+    // 1) aria-label에서 추출 ("12 replies" / "댓글 12개")
+    const label = replyBtn.getAttribute('aria-label') || '';
+    const labelMatch = label.match(/([\d,.]+[KkMm]?)/);
+    if (labelMatch) {
+      return labelMatch[1];
+    }
+
+    // 2) 버튼 내부 텍스트에서 추출 ("12", "1.2K")
+    const text = replyBtn.textContent?.trim();
+    if (text && /^[\d,.]+[KkMm]?$/.test(text)) {
+      return text;
+    }
+
+    return null;
+  }
+
   function parseFeed(options = {}) {
     const {
       removeLinks = true,
@@ -220,12 +245,13 @@ const XParser = (() => {
       if (seen.has(dedupeKey)) continue;
       seen.add(dedupeKey);
 
-      // 핸들 + 시간
+      // 핸들 + 시간 + 댓글 수
       const handle = extractHandle(article);
       const timeEl = article.querySelector(SELECTORS.time);
       const time = formatTime(timeEl);
+      const comments = extractCommentCount(article);
 
-      results.push({ handle, time, text });
+      results.push({ handle, time, text, comments });
     }
 
     return results;
@@ -233,9 +259,6 @@ const XParser = (() => {
 
   /**
    * 파싱 결과를 지정 포맷 문자열로 변환
-   * 
-   * @param {Array} tweets - parseFeed() 결과
-   * @returns {string} 포맷된 텍스트
    */
   function formatOutput(tweets) {
     if (!tweets || tweets.length === 0) {
@@ -243,8 +266,10 @@ const XParser = (() => {
     }
 
     return tweets.map(t => {
-      const header = t.time ? `${t.handle} · ${t.time}` : t.handle;
-      return `${header}\n${t.text}`;
+      const parts = [t.handle];
+      if (t.time) parts.push(t.time);
+      if (t.comments) parts.push(`💬 ${t.comments}`);
+      return `${parts.join(' · ')}\n${t.text}`;
     }).join('\n\n');
   }
 

@@ -107,6 +107,7 @@ const RedditParser = (() => {
       const title = post.getAttribute('post-title');
       const timestamp = post.getAttribute('created-timestamp');
       const subreddit = post.getAttribute('subreddit-prefixed-name');
+      const comments = post.getAttribute('comment-count');
 
       if (!author || !title) continue;
 
@@ -136,7 +137,7 @@ const RedditParser = (() => {
         ? `@${author} · ${subreddit}`
         : `@${author}`;
 
-      results.push({ handle, time, text });
+      results.push({ handle, time, text, comments });
     }
 
     return results;
@@ -146,8 +147,10 @@ const RedditParser = (() => {
     if (!tweets || tweets.length === 0) return '';
 
     return tweets.map(t => {
-      const header = t.time ? `${t.handle} · ${t.time}` : t.handle;
-      return `${header}\n${t.text}`;
+      const parts = [t.handle];
+      if (t.time) parts.push(t.time);
+      if (t.comments) parts.push(`💬 ${t.comments}`);
+      return `${parts.join(' · ')}\n${t.text}`;
     }).join('\n\n');
   }
 

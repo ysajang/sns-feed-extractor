@@ -288,6 +288,33 @@ const ThreadsParser = (() => {
 
   // ── 메인 파서 ─────────────────────────────────────────────────
 
+  /**
+   * 댓글(답글) 수 추출
+   * svg[aria-label="Reply"]와 같은 컨테이너의 형제 span 숫자
+   */
+  function extractCommentCount(postEl) {
+    const replySvg = postEl.querySelector('svg[aria-label="Reply"]');
+    if (!replySvg) return null;
+
+    // Reply SVG의 부모를 따라 올라가며 숫자 span 찾기
+    let el = replySvg.parentElement;
+    let depth = 0;
+
+    while (el && depth < 3) {
+      const spans = el.querySelectorAll('span');
+      for (const span of spans) {
+        const text = span.textContent?.trim();
+        if (text && /^[\d,.]+[KkMm]?$/.test(text)) {
+          return text;
+        }
+      }
+      el = el.parentElement;
+      depth++;
+    }
+
+    return null;
+  }
+
   function parseFeed(options = {}) {
     const {
       removeLinks = true,
@@ -315,6 +342,7 @@ const ThreadsParser = (() => {
 
       const timeEl = post.querySelector(SELECTORS.time);
       const time = formatTime(timeEl);
+      const comments = extractCommentCount(post);
 
       let finalText = text;
       if (removeLinks) {
@@ -322,7 +350,7 @@ const ThreadsParser = (() => {
       }
 
       if (finalText) {
-        results.push({ handle, time, text: finalText });
+        results.push({ handle, time, text: finalText, comments });
       }
     }
 
@@ -333,8 +361,10 @@ const ThreadsParser = (() => {
     if (!tweets || tweets.length === 0) return '';
 
     return tweets.map(t => {
-      const header = t.time ? `${t.handle} · ${t.time}` : t.handle;
-      return `${header}\n${t.text}`;
+      const parts = [t.handle];
+      if (t.time) parts.push(t.time);
+      if (t.comments) parts.push(`💬 ${t.comments}`);
+      return `${parts.join(' · ')}\n${t.text}`;
     }).join('\n\n');
   }
 
