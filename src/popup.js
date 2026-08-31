@@ -78,6 +78,7 @@
 
   // ── Settings ──────────────────────────────────────────────────
   async function loadSettings() {
+    let migrated = false;
     try {
       const result = await chrome.storage.local.get([STORAGE_KEY, `sns_keywords_${currentTabId}`]);
       const saved = result[STORAGE_KEY];
@@ -85,14 +86,24 @@
         if (typeof saved.removeLinks === 'boolean') els.optRemoveLinks.checked = saved.removeLinks;
         if (typeof saved.includeAds === 'boolean') els.optIncludeAds.checked = saved.includeAds;
         if (saved.maxCount) els.optMaxCount.value = String(clamp(saved.maxCount, 1, MAX_COUNT_LIMIT));
-        if (typeof saved.minLength === 'number' && !isNaN(saved.minLength)) {
-          els.optMinLength.value = String(clamp(saved.minLength, 0, MIN_LENGTH_LIMIT));
+        // v1.11.0 마이그레이션: 토글(minLengthOn)이 있던 시절의 설정 처리
+        // 토글이 꺼져 있었다면 저장된 숫자는 사용하지 않았던 값 -> 0으로 복원
+        const legacyOff = saved.minLengthOn === false;
+        const savedMin = parseInt(saved.minLength, 10);
+        if (legacyOff) {
+          els.optMinLength.value = '0';
+          migrated = true;
+        } else if (Number.isFinite(savedMin)) {
+          els.optMinLength.value = String(clamp(savedMin, 0, MIN_LENGTH_LIMIT));
+          migrated = 'minLengthOn' in saved;
         }
       }
       // 키워드는 탭별
       const kw = result[`sns_keywords_${currentTabId}`];
       if (kw) els.optKeywords.value = kw;
     } catch { /* default */ }
+    // 구버전 키(minLengthOn)를 제거한 형태로 다시 저장
+    if (migrated) await saveSettings();
   }
 
   async function saveSettings() {
