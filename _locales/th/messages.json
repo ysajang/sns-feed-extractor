@@ -68,6 +68,12 @@
   "keywordFilter": {
     "message": "กรองคำค้น"
   },
+  "minLengthFilter": {
+    "message": "ตัวกรองความยาวขั้นต่ำ"
+  },
+  "minLength": {
+    "message": "จำนวนอักขระขั้นต่ำ"
+  },
   "keywordPlaceholder": {
     "message": "เช่น: dream, astrology (คั่นด้วยเครื่องหมายจุลภาค)"
   }

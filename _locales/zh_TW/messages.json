@@ -68,6 +68,12 @@
   "keywordFilter": {
     "message": "關鍵詞篩選"
   },
+  "minLengthFilter": {
+    "message": "最小字數篩選"
+  },
+  "minLength": {
+    "message": "最小字數"
+  },
   "keywordPlaceholder": {
     "message": "例：dream, astrology（逗號分隔）"
   }

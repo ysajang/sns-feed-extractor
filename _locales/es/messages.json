@@ -68,6 +68,12 @@
   "keywordFilter": {
     "message": "Filtro por palabras"
   },
+  "minLengthFilter": {
+    "message": "Filtro de longitud mínima"
+  },
+  "minLength": {
+    "message": "Caracteres mínimos"
+  },
   "keywordPlaceholder": {
     "message": "ej: dream, astrology (separados por coma)"
   }

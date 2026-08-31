@@ -40,8 +40,26 @@
     optMaxCount:    document.getElementById('opt-max-count'),
     optMaxDown:     document.getElementById('opt-max-down'),
     optMaxUp:       document.getElementById('opt-max-up'),
-    optKeywords:    document.getElementById('opt-keywords')
+    optKeywords:    document.getElementById('opt-keywords'),
+    optMinLengthOn: document.getElementById('opt-min-length-on'),
+    optMinLength:   document.getElementById('opt-min-length'),
+    optMinDown:     document.getElementById('opt-min-down'),
+    optMinUp:       document.getElementById('opt-min-up'),
+    rowMinLength:   document.getElementById('row-min-length')
   };
+
+  // ── 한계값 ────────────────────────────────────────────────────
+  const MAX_COUNT_LIMIT = 1000;
+  const MIN_LENGTH_LIMIT = 10000;
+
+  function clamp(val, min, max) {
+    return Math.min(max, Math.max(min, val));
+  }
+
+  // 최소 글자수 입력칸 표시/숨김
+  function syncMinLengthRow() {
+    els.rowMinLength.classList.toggle('hidden', !els.optMinLengthOn.checked);
+  }
 
   // ── Storage Keys ──────────────────────────────────────────────
   const STORAGE_KEY = 'sns_extractor_options'; // 설정은 공유
@@ -72,12 +90,15 @@
       if (saved) {
         if (typeof saved.removeLinks === 'boolean') els.optRemoveLinks.checked = saved.removeLinks;
         if (typeof saved.includeAds === 'boolean') els.optIncludeAds.checked = saved.includeAds;
-        if (saved.maxCount) els.optMaxCount.value = String(saved.maxCount);
+        if (saved.maxCount) els.optMaxCount.value = String(clamp(saved.maxCount, 1, MAX_COUNT_LIMIT));
+        if (typeof saved.minLengthOn === 'boolean') els.optMinLengthOn.checked = saved.minLengthOn;
+        if (saved.minLength) els.optMinLength.value = String(clamp(saved.minLength, 1, MIN_LENGTH_LIMIT));
       }
       // 키워드는 탭별
       const kw = result[`sns_keywords_${currentTabId}`];
       if (kw) els.optKeywords.value = kw;
     } catch { /* default */ }
+    syncMinLengthRow();
   }
 
   async function saveSettings() {
@@ -86,7 +107,9 @@
         [STORAGE_KEY]: {
           removeLinks: els.optRemoveLinks.checked,
           includeAds: els.optIncludeAds.checked,
-          maxCount: parseInt(els.optMaxCount.value, 10)
+          maxCount: parseInt(els.optMaxCount.value, 10),
+          minLengthOn: els.optMinLengthOn.checked,
+          minLength: parseInt(els.optMinLength.value, 10)
         },
         [`sns_keywords_${currentTabId}`]: els.optKeywords.value.trim()
       });
@@ -213,11 +236,14 @@
       }
 
       const rawMax = parseInt(els.optMaxCount.value, 10) || 50;
+      const rawMin = parseInt(els.optMinLength.value, 10) || 0;
       const options = {
         removeLinks: els.optRemoveLinks.checked,
         includePromoted: els.optIncludeAds.checked,
-        maxCount: Math.min(200, Math.max(1, rawMax)),
-        keywords: els.optKeywords.value.trim()
+        maxCount: clamp(rawMax, 1, MAX_COUNT_LIMIT),
+        keywords: els.optKeywords.value.trim(),
+        // 토글 off면 0 -> content.js에서 필터 미적용
+        minLength: els.optMinLengthOn.checked ? clamp(rawMin, 1, MIN_LENGTH_LIMIT) : 0
       };
       saveSettings();
       await chrome.storage.local.remove([scrollStatusKey(), scrollResultKey(), scrollStopKey()]);
@@ -287,21 +313,40 @@
   els.optIncludeAds.addEventListener('change', saveSettings);
   els.optMaxCount.addEventListener('change', () => {
     let val = parseInt(els.optMaxCount.value, 10);
-    if (isNaN(val) || val < 1) val = 1;
-    if (val > 200) val = 200;
-    els.optMaxCount.value = val;
+    if (isNaN(val)) val = 50;
+    els.optMaxCount.value = clamp(val, 1, MAX_COUNT_LIMIT);
     saveSettings();
   });
 
-  function stepMaxCount(delta) {
-    let val = parseInt(els.optMaxCount.value, 10) || 50;
-    val = Math.min(200, Math.max(1, val + delta));
-    els.optMaxCount.value = val;
+  // 200 이상 구간은 50 단위로 이동 (1000까지 버튼 연타 부담 완화)
+  function stepMaxCount(direction) {
+    const val = parseInt(els.optMaxCount.value, 10) || 50;
+    const step = val >= 200 ? 50 : 10;
+    els.optMaxCount.value = clamp(val + step * direction, 1, MAX_COUNT_LIMIT);
     saveSettings();
   }
-  els.optMaxDown.addEventListener('click', (e) => { e.preventDefault(); stepMaxCount(-10); });
-  els.optMaxUp.addEventListener('click', (e) => { e.preventDefault(); stepMaxCount(10); });
+  els.optMaxDown.addEventListener('click', (e) => { e.preventDefault(); stepMaxCount(-1); });
+  els.optMaxUp.addEventListener('click', (e) => { e.preventDefault(); stepMaxCount(1); });
   els.optKeywords.addEventListener('change', saveSettings);
+
+  // ── 최소 글자수 필터 ──────────────────────────────────────────
+  els.optMinLengthOn.addEventListener('change', () => {
+    syncMinLengthRow();
+    saveSettings();
+  });
+  els.optMinLength.addEventListener('change', () => {
+    let val = parseInt(els.optMinLength.value, 10);
+    if (isNaN(val)) val = 100;
+    els.optMinLength.value = clamp(val, 1, MIN_LENGTH_LIMIT);
+    saveSettings();
+  });
+  function stepMinLength(delta) {
+    const val = parseInt(els.optMinLength.value, 10) || 100;
+    els.optMinLength.value = clamp(val + delta, 1, MIN_LENGTH_LIMIT);
+    saveSettings();
+  }
+  els.optMinDown.addEventListener('click', (e) => { e.preventDefault(); stepMinLength(-10); });
+  els.optMinUp.addEventListener('click', (e) => { e.preventDefault(); stepMinLength(10); });
 
   const linkUpdates = document.getElementById('link-updates');
   if (linkUpdates) {

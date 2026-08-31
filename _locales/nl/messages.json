@@ -68,6 +68,12 @@
   "keywordFilter": {
     "message": "Zoekwoordfilter"
   },
+  "minLengthFilter": {
+    "message": "Minimale lengte-filter"
+  },
+  "minLength": {
+    "message": "Minimum tekens"
+  },
   "keywordPlaceholder": {
     "message": "bijv: dream, astrology (gescheiden door komma)"
   }

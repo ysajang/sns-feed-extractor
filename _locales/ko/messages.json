@@ -68,6 +68,12 @@
   "keywordFilter": {
     "message": "키워드 필터"
   },
+  "minLengthFilter": {
+    "message": "최소 글자수 필터"
+  },
+  "minLength": {
+    "message": "최소 글자수"
+  },
   "keywordPlaceholder": {
     "message": "예: dream, astrology (쉼표 구분)"
   }

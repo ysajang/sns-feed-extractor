@@ -36,13 +36,26 @@
         <span class="setting-label" data-i18n="maxCount"></span>
         <div class="stepper">
           <button id="opt-max-down" class="stepper-btn" type="button">−</button>
-          <input type="number" id="opt-max-count" min="1" max="200" value="50" step="1">
+          <input type="number" id="opt-max-count" min="1" max="1000" value="50" step="1">
           <button id="opt-max-up" class="stepper-btn" type="button">+</button>
         </div>
       </div>
       <div class="setting-row setting-row-col">
         <span class="setting-label" data-i18n="keywordFilter"></span>
         <input type="text" id="opt-keywords" class="keyword-input" data-i18n-placeholder="keywordPlaceholder">
+      </div>
+      <label class="setting-row">
+        <span class="setting-label" data-i18n="minLengthFilter"></span>
+        <input type="checkbox" id="opt-min-length-on">
+        <span class="toggle"></span>
+      </label>
+      <div class="setting-row hidden" id="row-min-length">
+        <span class="setting-label" data-i18n="minLength"></span>
+        <div class="stepper">
+          <button id="opt-min-down" class="stepper-btn" type="button">−</button>
+          <input type="number" id="opt-min-length" min="1" max="10000" value="100" step="10">
+          <button id="opt-min-up" class="stepper-btn" type="button">+</button>
+        </div>
       </div>
     </section>
 

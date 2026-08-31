@@ -68,6 +68,12 @@
   "keywordFilter": {
     "message": "Filtro parole chiave"
   },
+  "minLengthFilter": {
+    "message": "Filtro lunghezza minima"
+  },
+  "minLength": {
+    "message": "Caratteri minimi"
+  },
   "keywordPlaceholder": {
     "message": "es: dream, astrology (separati da virgola)"
   }

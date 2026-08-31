@@ -68,6 +68,12 @@
   "keywordFilter": {
     "message": "Anahtar kelime filtresi"
   },
+  "minLengthFilter": {
+    "message": "Minimum uzunluk filtresi"
+  },
+  "minLength": {
+    "message": "Minimum karakter"
+  },
   "keywordPlaceholder": {
     "message": "örn: dream, astrology (virgülle ayırın)"
   }

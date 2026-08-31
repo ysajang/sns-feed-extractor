@@ -68,6 +68,12 @@
   "keywordFilter": {
     "message": "Filtr słów kluczowych"
   },
+  "minLengthFilter": {
+    "message": "Filtr minimalnej długości"
+  },
+  "minLength": {
+    "message": "Minimalna liczba znaków"
+  },
   "keywordPlaceholder": {
     "message": "np: dream, astrology (rozdzielone przecinkiem)"
   }

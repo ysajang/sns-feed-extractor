@@ -68,6 +68,12 @@
   "keywordFilter": {
     "message": "Stichwortfilter"
   },
+  "minLengthFilter": {
+    "message": "Mindestlängen-Filter"
+  },
+  "minLength": {
+    "message": "Mindestzeichen"
+  },
   "keywordPlaceholder": {
     "message": "z.B. dream, astrology (kommagetrennt)"
   }

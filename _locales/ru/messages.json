@@ -68,6 +68,12 @@
   "keywordFilter": {
     "message": "Фильтр по словам"
   },
+  "minLengthFilter": {
+    "message": "Фильтр по длине"
+  },
+  "minLength": {
+    "message": "Минимум символов"
+  },
   "keywordPlaceholder": {
     "message": "напр: dream, astrology (через запятую)"
   }

@@ -68,6 +68,12 @@
   "keywordFilter": {
     "message": "Filter kata kunci"
   },
+  "minLengthFilter": {
+    "message": "Filter panjang minimum"
+  },
+  "minLength": {
+    "message": "Karakter minimum"
+  },
   "keywordPlaceholder": {
     "message": "cth: dream, astrology (pisahkan dengan koma)"
   }

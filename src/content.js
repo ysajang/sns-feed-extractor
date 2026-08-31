@@ -77,6 +77,7 @@
    */
   async function scrollAndCollect(parser, options, platformInfo, seedResults, keywordsStr) {
     const maxCount = options.maxCount || 100;
+    const minLength = normalizeMinLength(options.minLength);
     const allTweets = new Map();
 
     // seed 데이터로 초기화 (즉시 추출 결과)
@@ -107,7 +108,8 @@
 
       let noNewCount = 0;
       let scrollAttempts = 0;
-      const MAX_SCROLL_ATTEMPTS = 200;
+      // 목표 수집량에 비례 (1000개 수집 시 200회로는 부족)
+      const MAX_SCROLL_ATTEMPTS = Math.min(2000, Math.max(200, maxCount * 3));
 
       // 비활성 탭 감지 -> 더 관대한 설정
       const isBackgroundTab = document.hidden;
@@ -122,14 +124,15 @@
       // 플랫폼별 스크롤 거리 배수 (Quora는 답변이 길어서 크게)
       const scrollMultiplier = (platformId === 'quora') ? 3 : 1;
       const hasKeywords = keywordsStr && keywordsStr.trim().length > 0;
+      const hasFilters = hasKeywords || minLength > 0;
       let scrollPosition = window.scrollY; // 절대 위치 추적
 
       /**
-       * 키워드 필터 적용 후 매칭 수 계산
+       * 필터(키워드 + 최소 글자수) 적용 후 매칭 수 계산
        */
       function getMatchedCount() {
-        if (!hasKeywords) return allTweets.size;
-        return filterByKeywords([...allTweets.values()], keywordsStr).length;
+        if (!hasFilters) return allTweets.size;
+        return applyFilters([...allTweets.values()], keywordsStr, minLength).length;
       }
 
       while (getMatchedCount() < maxCount && scrollAttempts < MAX_SCROLL_ATTEMPTS) {
@@ -139,7 +142,7 @@
         // 현재 화면의 포스트 파싱
         const currentBatch = parser.parseFeed({
           ...options,
-          maxCount: maxCount * (hasKeywords ? 5 : 1)
+          maxCount: maxCount * (hasFilters ? 5 : 1)
         });
 
         let newCount = 0;
@@ -207,16 +210,16 @@
         const clicked = parser.expandAllShowMore();
         if (clicked > 0) await sleep(500);
         // 펼친 후 다시 파싱하여 전체 텍스트 갱신
-        const finalBatch = parser.parseFeed({ ...options, maxCount: maxCount });
+        const finalBatch = parser.parseFeed({ ...options, maxCount: maxCount * (hasFilters ? 5 : 1) });
         for (const tweet of finalBatch) {
           const key = tweet.text.substring(0, 120);
           allTweets.set(key, tweet); // 기존 키 덮어쓰기 (펼쳐진 전체 텍스트로)
         }
       }
 
-      // 결과 저장 (키워드 필터 적용)
+      // 결과 저장 (키워드 + 최소 글자수 필터 적용)
       const allResults = [...allTweets.values()];
-      const filtered = filterByKeywords(allResults, keywordsStr);
+      const filtered = applyFilters(allResults, keywordsStr, minLength);
       const tweets = filtered.slice(0, maxCount);
       const formatted = parser.formatOutput(tweets);
 
@@ -248,6 +251,42 @@
 
       await setScrollStatus('error', allTweets.size);
     }
+  }
+
+  /**
+   * 최소 글자수 값 정규화
+   * @returns {number} 0이면 필터 비활성
+   */
+  function normalizeMinLength(value) {
+    const n = parseInt(value, 10);
+    if (!Number.isFinite(n) || n <= 0) return 0;
+    return Math.min(100000, n);
+  }
+
+  /**
+   * 본문 글자수 계산 — 코드포인트 기준 (이모지 1자 처리)
+   * 공백 정리 후 측정
+   */
+  function textLength(text) {
+    if (!text) return 0;
+    return Array.from(text.replace(/\s+/g, ' ').trim()).length;
+  }
+
+  /**
+   * 최소 글자수 필터 — 본문이 minLength "이상"인 것만 통과
+   * 인용문은 제외하고 본문만 측정
+   */
+  function filterByMinLength(tweets, minLength) {
+    const min = normalizeMinLength(minLength);
+    if (min === 0) return tweets;
+    return tweets.filter(tweet => textLength(tweet.text) >= min);
+  }
+
+  /**
+   * 키워드 + 최소 글자수 필터를 함께 적용 (AND 조건)
+   */
+  function applyFilters(tweets, keywordsStr, minLength) {
+    return filterByMinLength(filterByKeywords(tweets, keywordsStr), minLength);
   }
 
   /**
@@ -298,6 +337,8 @@
       const options = request.options || {};
       const maxCount = options.maxCount || 50;
       const keywordsStr = options.keywords || '';
+      const minLength = normalizeMinLength(options.minLength);
+      const hasFilters = (keywordsStr.trim().length > 0) || minLength > 0;
       const platformInfo = parser.getPlatformInfo();
 
       (async () => {
@@ -309,8 +350,11 @@
           }
 
           // 1차: 현재 DOM에서 즉시 추출
-          const rawResults = parser.parseFeed(options);
-          const instantResults = filterByKeywords(rawResults, keywordsStr);
+          const rawResults = parser.parseFeed({
+            ...options,
+            maxCount: maxCount * (hasFilters ? 5 : 1)
+          });
+          const instantResults = applyFilters(rawResults, keywordsStr, minLength).slice(0, maxCount);
 
           if (instantResults.length >= maxCount) {
             // 충분 -> 즉시 반환
@@ -366,6 +410,11 @@
       return true;
     }
   });
+
+  // 필터 순수함수 노출 (자동 테스트용 — 런타임 동작에는 영향 없음)
+  window.__SNS_EXTRACTOR_FILTERS__ = {
+    normalizeMinLength, textLength, filterByKeywords, filterByMinLength, applyFilters
+  };
 
   console.log('[SNS Feed Extractor] Content script loaded on', window.location.hostname);
 })();
