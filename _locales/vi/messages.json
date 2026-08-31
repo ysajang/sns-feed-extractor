@@ -68,9 +68,6 @@
   "keywordFilter": {
     "message": "Lọc từ khóa"
   },
-  "minLengthFilter": {
-    "message": "Bộ lọc độ dài tối thiểu"
-  },
   "minLength": {
     "message": "Số ký tự tối thiểu"
   },

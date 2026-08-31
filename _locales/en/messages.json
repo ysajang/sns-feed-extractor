@@ -68,9 +68,6 @@
   "keywordFilter": {
     "message": "Keyword filter"
   },
-  "minLengthFilter": {
-    "message": "Min length filter"
-  },
   "minLength": {
     "message": "Min characters"
   },

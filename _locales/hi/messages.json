@@ -68,9 +68,6 @@
   "keywordFilter": {
     "message": "कीवर्ड फ़िल्टर"
   },
-  "minLengthFilter": {
-    "message": "न्यूनतम लंबाई फ़िल्टर"
-  },
   "minLength": {
     "message": "न्यूनतम वर्ण"
   },

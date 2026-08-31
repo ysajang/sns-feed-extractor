@@ -68,9 +68,6 @@
   "keywordFilter": {
     "message": "キーワードフィルター"
   },
-  "minLengthFilter": {
-    "message": "最小文字数フィルター"
-  },
   "minLength": {
     "message": "最小文字数"
   },

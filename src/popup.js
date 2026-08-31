@@ -28,7 +28,6 @@
     platformName:   document.getElementById('platform-name'),
     btnExtract:     document.getElementById('btn-extract'),
     btnStop:        document.getElementById('btn-stop'),
-    btnCopy:        document.getElementById('btn-copy'),
     resultArea:     document.getElementById('result-area'),
     resultCount:    document.getElementById('result-count'),
     resultText:     document.getElementById('result-text'),
@@ -41,24 +40,19 @@
     optMaxDown:     document.getElementById('opt-max-down'),
     optMaxUp:       document.getElementById('opt-max-up'),
     optKeywords:    document.getElementById('opt-keywords'),
-    optMinLengthOn: document.getElementById('opt-min-length-on'),
     optMinLength:   document.getElementById('opt-min-length'),
     optMinDown:     document.getElementById('opt-min-down'),
     optMinUp:       document.getElementById('opt-min-up'),
-    rowMinLength:   document.getElementById('row-min-length')
+    copyBadge:      document.getElementById('copy-badge')
   };
 
   // ── 한계값 ────────────────────────────────────────────────────
   const MAX_COUNT_LIMIT = 1000;
   const MIN_LENGTH_LIMIT = 10000;
+  const STEP = 5; // +/- 버튼 증감 단위
 
   function clamp(val, min, max) {
     return Math.min(max, Math.max(min, val));
-  }
-
-  // 최소 글자수 입력칸 표시/숨김
-  function syncMinLengthRow() {
-    els.rowMinLength.classList.toggle('hidden', !els.optMinLengthOn.checked);
   }
 
   // ── Storage Keys ──────────────────────────────────────────────
@@ -91,14 +85,14 @@
         if (typeof saved.removeLinks === 'boolean') els.optRemoveLinks.checked = saved.removeLinks;
         if (typeof saved.includeAds === 'boolean') els.optIncludeAds.checked = saved.includeAds;
         if (saved.maxCount) els.optMaxCount.value = String(clamp(saved.maxCount, 1, MAX_COUNT_LIMIT));
-        if (typeof saved.minLengthOn === 'boolean') els.optMinLengthOn.checked = saved.minLengthOn;
-        if (saved.minLength) els.optMinLength.value = String(clamp(saved.minLength, 1, MIN_LENGTH_LIMIT));
+        if (typeof saved.minLength === 'number' && !isNaN(saved.minLength)) {
+          els.optMinLength.value = String(clamp(saved.minLength, 0, MIN_LENGTH_LIMIT));
+        }
       }
       // 키워드는 탭별
       const kw = result[`sns_keywords_${currentTabId}`];
       if (kw) els.optKeywords.value = kw;
     } catch { /* default */ }
-    syncMinLengthRow();
   }
 
   async function saveSettings() {
@@ -108,8 +102,7 @@
           removeLinks: els.optRemoveLinks.checked,
           includeAds: els.optIncludeAds.checked,
           maxCount: parseInt(els.optMaxCount.value, 10),
-          minLengthOn: els.optMinLengthOn.checked,
-          minLength: parseInt(els.optMinLength.value, 10)
+          minLength: parseInt(els.optMinLength.value, 10) || 0
         },
         [`sns_keywords_${currentTabId}`]: els.optKeywords.value.trim()
       });
@@ -192,11 +185,7 @@
           const sr = result[scrollResultKey()];
           if (sr?.success) {
             const { count, formatted, platform } = sr.data;
-            els.resultText.value = formatted;
-            els.resultCount.textContent = `${platform} · ${t('postsExtracted', String(count))}`;
-            els.resultArea.classList.remove('hidden');
-            showStatus('success', '✅', t('extractDone', String(count)));
-            saveResult(platform, count, formatted);
+            await showResult(platform, count, formatted);
           } else {
             showStatus('error', '❌', sr?.message || t('extractFail'));
           }
@@ -242,8 +231,8 @@
         includePromoted: els.optIncludeAds.checked,
         maxCount: clamp(rawMax, 1, MAX_COUNT_LIMIT),
         keywords: els.optKeywords.value.trim(),
-        // 토글 off면 0 -> content.js에서 필터 미적용
-        minLength: els.optMinLengthOn.checked ? clamp(rawMin, 1, MIN_LENGTH_LIMIT) : 0
+        // 0이면 content.js에서 글자수 필터 미적용
+        minLength: clamp(rawMin, 0, MIN_LENGTH_LIMIT)
       };
       saveSettings();
       await chrome.storage.local.remove([scrollStatusKey(), scrollResultKey(), scrollStopKey()]);
@@ -261,11 +250,7 @@
           showStatus('info', 'ℹ️', t('noText'));
           btn.classList.remove('btn-loading'); btn.disabled = false; return;
         }
-        els.resultText.value = formatted;
-        els.resultCount.textContent = `${platform} · ${t('postsExtracted', String(count))}`;
-        els.resultArea.classList.remove('hidden');
-        showStatus('success', '✅', t('extractDone', String(count)));
-        saveResult(platform, count, formatted);
+        await showResult(platform, count, formatted);
         btn.classList.remove('btn-loading'); btn.disabled = false;
 
       } else if (response.data.started) {
@@ -279,21 +264,45 @@
     }
   }
 
-  // ── Copy ──────────────────────────────────────────────────────
-  async function handleCopy() {
-    const text = els.resultText.value;
-    if (!text) return;
+  // ── Auto copy ─────────────────────────────────────────────────
+  /**
+   * 추출 완료 시 클립보드에 자동 복사
+   * navigator.clipboard 실패 시 textarea select + execCommand로 폴백
+   * @returns {Promise<boolean>} 복사 성공 여부
+   */
+  async function autoCopy(text) {
+    if (!text) return false;
     try {
       await navigator.clipboard.writeText(text);
-      els.btnCopy.classList.add('btn-copied');
-      els.btnCopy.textContent = '✅ ' + t('copied');
-      setTimeout(() => { els.btnCopy.classList.remove('btn-copied'); els.btnCopy.textContent = '📋 ' + t('copy'); }, 1500);
+      return true;
     } catch {
-      els.resultText.select();
-      document.execCommand('copy');
-      els.btnCopy.textContent = '✅ ' + t('copied');
-      setTimeout(() => { els.btnCopy.textContent = '📋 ' + t('copy'); }, 1500);
+      try {
+        els.resultText.removeAttribute('readonly');
+        els.resultText.select();
+        const ok = document.execCommand('copy');
+        els.resultText.setAttribute('readonly', '');
+        els.resultText.setSelectionRange(0, 0);
+        return ok;
+      } catch {
+        return false;
+      }
     }
+  }
+
+  /**
+   * 결과 표시 + 자동 복사 (즉시 추출 / 스크롤 완료 공통)
+   */
+  async function showResult(platform, count, formatted) {
+    els.resultText.value = formatted;
+    els.resultCount.textContent = `${platform} · ${t('postsExtracted', String(count))}`;
+    els.resultArea.classList.remove('hidden');
+    saveResult(platform, count, formatted);
+
+    const copied = await autoCopy(formatted);
+    els.copyBadge.textContent = copied ? '✅ ' + t('copied') : '';
+    els.copyBadge.classList.toggle('hidden', !copied);
+    showStatus('success', '✅',
+      copied ? `${t('extractDone', String(count))} · ${t('copied')}` : t('extractDone', String(count)));
   }
 
   // ── Stop scroll ───────────────────────────────────────────────
@@ -307,7 +316,6 @@
   // ── Event binding ─────────────────────────────────────────────
   els.btnExtract.addEventListener('click', handleExtract);
   els.btnStop.addEventListener('click', handleStop);
-  els.btnCopy.addEventListener('click', handleCopy);
 
   els.optRemoveLinks.addEventListener('change', saveSettings);
   els.optIncludeAds.addEventListener('change', saveSettings);
@@ -319,34 +327,29 @@
   });
 
   // 200 이상 구간은 50 단위로 이동 (1000까지 버튼 연타 부담 완화)
-  function stepMaxCount(direction) {
+  function stepMaxCount(delta) {
     const val = parseInt(els.optMaxCount.value, 10) || 50;
-    const step = val >= 200 ? 50 : 10;
-    els.optMaxCount.value = clamp(val + step * direction, 1, MAX_COUNT_LIMIT);
+    els.optMaxCount.value = clamp(val + delta, 1, MAX_COUNT_LIMIT);
     saveSettings();
   }
-  els.optMaxDown.addEventListener('click', (e) => { e.preventDefault(); stepMaxCount(-1); });
-  els.optMaxUp.addEventListener('click', (e) => { e.preventDefault(); stepMaxCount(1); });
+  els.optMaxDown.addEventListener('click', (e) => { e.preventDefault(); stepMaxCount(-STEP); });
+  els.optMaxUp.addEventListener('click', (e) => { e.preventDefault(); stepMaxCount(STEP); });
   els.optKeywords.addEventListener('change', saveSettings);
 
   // ── 최소 글자수 필터 ──────────────────────────────────────────
-  els.optMinLengthOn.addEventListener('change', () => {
-    syncMinLengthRow();
-    saveSettings();
-  });
   els.optMinLength.addEventListener('change', () => {
     let val = parseInt(els.optMinLength.value, 10);
-    if (isNaN(val)) val = 100;
-    els.optMinLength.value = clamp(val, 1, MIN_LENGTH_LIMIT);
+    if (isNaN(val)) val = 0;
+    els.optMinLength.value = clamp(val, 0, MIN_LENGTH_LIMIT);
     saveSettings();
   });
   function stepMinLength(delta) {
-    const val = parseInt(els.optMinLength.value, 10) || 100;
-    els.optMinLength.value = clamp(val + delta, 1, MIN_LENGTH_LIMIT);
+    const val = parseInt(els.optMinLength.value, 10) || 0;
+    els.optMinLength.value = clamp(val + delta, 0, MIN_LENGTH_LIMIT);
     saveSettings();
   }
-  els.optMinDown.addEventListener('click', (e) => { e.preventDefault(); stepMinLength(-10); });
-  els.optMinUp.addEventListener('click', (e) => { e.preventDefault(); stepMinLength(10); });
+  els.optMinDown.addEventListener('click', (e) => { e.preventDefault(); stepMinLength(-STEP); });
+  els.optMinUp.addEventListener('click', (e) => { e.preventDefault(); stepMinLength(STEP); });
 
   const linkUpdates = document.getElementById('link-updates');
   if (linkUpdates) {
@@ -380,11 +383,7 @@
           const sr = result[scrollResultKey()];
           if (sr?.success) {
             const { count, formatted, platform } = sr.data;
-            els.resultText.value = formatted;
-            els.resultCount.textContent = `${platform} · ${t('postsExtracted', String(count))}`;
-            els.resultArea.classList.remove('hidden');
-            showStatus('success', '✅', t('extractDone', String(count)));
-            saveResult(platform, count, formatted);
+            await showResult(platform, count, formatted);
           }
           chrome.storage.local.remove([scrollStatusKey(), scrollResultKey(), scrollStopKey()]);
         }

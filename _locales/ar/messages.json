@@ -68,9 +68,6 @@
   "keywordFilter": {
     "message": "تصفية بالكلمات"
   },
-  "minLengthFilter": {
-    "message": "مرشح الحد الأدنى للطول"
-  },
   "minLength": {
     "message": "الحد الأدنى للأحرف"
   },

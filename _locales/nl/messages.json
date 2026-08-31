@@ -68,9 +68,6 @@
   "keywordFilter": {
     "message": "Zoekwoordfilter"
   },
-  "minLengthFilter": {
-    "message": "Minimale lengte-filter"
-  },
   "minLength": {
     "message": "Minimum tekens"
   },
