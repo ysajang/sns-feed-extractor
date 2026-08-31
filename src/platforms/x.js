@@ -32,6 +32,15 @@ const XParser = (() => {
     showMore: '[data-testid="tweet-text-show-more-link"]'
   };
 
+  // 광고 라벨 텍스트 (X UI 언어별)
+  const AD_LABELS = new Set([
+    'ad', 'promoted', '광고', '프로모션', 'anuncio', 'promocionado',
+    'publicité', 'sponsorisé', 'werbung', 'gesponsert', 'annuncio',
+    'sponsorizzato', 'anúncio', 'promovido', 'реклама', 'プロモーション',
+    '広告', '推广', '推廣', 'iklan', 'quảng cáo', 'โฆษณา', 'reklam',
+    'reklama', 'advertentie', 'إعلان', 'विज्ञापन'
+  ]);
+
   // ── 유틸리티 ──────────────────────────────────────────────────
   
   /**
@@ -115,18 +124,22 @@ const XParser = (() => {
    * 트윗이 광고/프로모션인지 판별
    */
   function isPromoted(tweetEl) {
+    // 광고 마커는 article의 "조상"에 위치한다 (article 내부에는 없음)
+    // <div data-testid="placementTracking"> ... <article data-testid="tweet">
+    if (tweetEl.closest(SELECTORS.adIndicator)) return true;
     if (tweetEl.querySelector(SELECTORS.adIndicator)) return true;
     if (tweetEl.querySelector(SELECTORS.promotedIcon)) return true;
-    
-    // "Ad" 또는 "프로모션" 텍스트 체크 (하위 span에서)
-    const spans = tweetEl.querySelectorAll('span');
-    for (const span of spans) {
-      const text = span.textContent?.trim().toLowerCase();
-      if (text === 'ad' || text === 'promoted' || text === '프로모션') {
-        return true;
-      }
+
+    // 광고 트윗에는 게시 시각 링크(time[datetime])가 없다
+    if (!tweetEl.querySelector(SELECTORS.time)) return true;
+
+    // "Ad" / "Promoted" / "광고" 라벨 텍스트 체크 (하위 div·span에서)
+    const labels = tweetEl.querySelectorAll('span, div[dir="ltr"]');
+    for (const el of labels) {
+      const text = el.textContent?.trim().toLowerCase();
+      if (AD_LABELS.has(text)) return true;
     }
-    
+
     return false;
   }
 
