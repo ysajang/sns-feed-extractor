@@ -215,6 +215,62 @@ const XParser = (() => {
     return null;
   }
 
+  /**
+   * 인용 트윗(Quote Tweet) 추출
+   * 
+   * 구조: article 내부에 [data-testid="tweetText"]가 2개 존재
+   * - [0] 원본 트윗 본문
+   * - [1] 인용된 트윗 본문
+   * 인용 블록은 div[role="link"] 컨테이너에 감싸여 있음
+   * 
+   * @returns {{handle: string, time: string, text: string}|null}
+   */
+  function extractQuote(article, options = {}) {
+    const allTexts = article.querySelectorAll(SELECTORS.tweetText);
+    if (allTexts.length < 2) return null;
+
+    const quoteTextEl = allTexts[1];
+
+    // 인용 블록 컨테이너 찾기 (위로 올라가며 role="link" 탐색)
+    let container = quoteTextEl.parentElement;
+    let depth = 0;
+    while (container && depth < 10) {
+      if (container.getAttribute('role') === 'link') break;
+      container = container.parentElement;
+      depth++;
+    }
+    if (!container) container = quoteTextEl.parentElement;
+
+    // 인용 작성자 핸들 — 컨테이너 내부의 @핸들
+    let handle = '@unknown';
+    const userNameEl = container.querySelector(SELECTORS.userName);
+    if (userNameEl) {
+      const spans = userNameEl.querySelectorAll('span');
+      for (const span of spans) {
+        const t = span.textContent?.trim();
+        if (t && t.startsWith('@')) { handle = t; break; }
+      }
+    }
+    // fallback: 전체 User-Name 중 두 번째
+    if (handle === '@unknown') {
+      const allUsers = article.querySelectorAll(SELECTORS.userName);
+      if (allUsers.length >= 2) {
+        const match = (allUsers[1].textContent || '').match(/@[\w]+/);
+        if (match) handle = match[0];
+      }
+    }
+
+    // 인용 트윗 시간
+    const timeEl = container.querySelector(SELECTORS.time);
+    const time = formatTime(timeEl);
+
+    // 인용 본문
+    const text = cleanText(quoteTextEl.innerText, options);
+    if (!text) return null;
+
+    return { handle, time, text };
+  }
+
   function parseFeed(options = {}) {
     const {
       removeLinks = true,
@@ -245,13 +301,14 @@ const XParser = (() => {
       if (seen.has(dedupeKey)) continue;
       seen.add(dedupeKey);
 
-      // 핸들 + 시간 + 댓글 수
+      // 핸들 + 시간 + 댓글 수 + 인용 트윗
       const handle = extractHandle(article);
       const timeEl = article.querySelector(SELECTORS.time);
       const time = formatTime(timeEl);
       const comments = extractCommentCount(article);
+      const quote = extractQuote(article, { removeLinks });
 
-      results.push({ handle, time, text, comments });
+      results.push({ handle, time, text, comments, quote });
     }
 
     return results;
@@ -269,7 +326,21 @@ const XParser = (() => {
       const parts = [t.handle];
       if (t.time) parts.push(t.time);
       if (t.comments) parts.push(`💬 ${t.comments}`);
-      return `${parts.join(' · ')}\n${t.text}`;
+      
+      let block = `${parts.join(' · ')}\n${t.text}`;
+
+      // 인용 트윗 추가
+      if (t.quote) {
+        const qParts = [t.quote.handle];
+        if (t.quote.time) qParts.push(t.quote.time);
+        const quoteBody = t.quote.text
+          .split('\n')
+          .map(line => `  ${line}`)
+          .join('\n');
+        block += `\n  ↳ [인용] ${qParts.join(' · ')}\n${quoteBody}`;
+      }
+
+      return block;
     }).join('\n\n');
   }
 
