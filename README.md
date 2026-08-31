@@ -23,9 +23,14 @@ Grab @handles, post text, and timestamps from your feed — paste directly into 
 ## How It Works
 
 1. Open any supported platform in your browser
-2. Scroll to load the posts you want
-3. Click the extension icon → hit **Extract**
-4. Review the output → **Copy** to clipboard → paste into your AI tool
+2. Click the extension icon → set your filters → hit **Extract**
+3. If the visible feed has fewer posts than requested, the extension
+   auto-scrolls and keeps collecting until it hits the target or the end
+   of the feed. Collection continues even if you close the popup.
+4. The result is **copied to your clipboard automatically** → paste into your AI tool
+
+Filters are applied as an AND condition: a post is kept only if it matches
+the keyword filter *and* meets the minimum character length.
 
 ## Output Format
 
@@ -42,9 +47,19 @@ Another post body text
 | Option | Default | Description |
 |--------|---------|-------------|
 | Remove links | ON | Strip shortened URLs from text |
+| Max count | 50 | How many posts to collect (1–1000, ±5 per step) |
+| Keyword filter | — | Comma-separated, OR match, case-insensitive |
+| Min characters | 0 | Keep posts whose body is **at least** N characters. `0` disables it |
 | Include ads | OFF | Include promoted/sponsored posts |
-| Max count | 50 | Limit: 20 / 50 / 100 / 200 |
-| Auto-scroll | OFF | Scroll and collect automatically |
+
+Notes:
+
+- **Min characters** counts code points after collapsing whitespace, so one
+  emoji counts as one character. Quoted post text is not counted.
+- **1000 posts is realistic on X only.** Quora caps out around 110 posts due to
+  a server-side rate limit, and Threads/Reddit usually reach the end of the feed
+  first. Collection stops cleanly and returns whatever was gathered.
+- Large targets take minutes. The popup can be closed while it runs.
 
 ## Architecture
 
@@ -76,6 +91,20 @@ sns-feed-extractor/
 - Content script message bridge (`content.js`)
 - Background service worker for onInstall welcome page
 - All extraction runs locally — no data sent to external servers
+
+## Changelog
+
+### 1.11.x
+- Minimum character length filter (always visible, `0` = off)
+- Max count raised from 200 to 1000, with a scroll budget that scales to the target
+- Stepper buttons move in increments of 5
+- Copy button removed — results are copied automatically on completion
+- Include-ads toggle moved to the bottom; popup uses the full available height
+- Settings saved by the previous toggle-based build are migrated on load
+
+### 1.9.2
+- Fixed X ad filtering: the promoted marker sits on an ancestor of the tweet
+  element, not inside it, so ads were slipping through
 
 ## Privacy
 
