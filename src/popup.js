@@ -6,7 +6,36 @@
   'use strict';
 
   // ── i18n helper ───────────────────────────────────────────────
+  // UI 언어를 고정한다. null로 두면 브라우저 언어를 그대로 따른다.
+  // (_locales의 다른 언어 파일은 그대로 유지 — 스토어 등록 시 재사용)
+  const FORCE_LOCALE = 'en';
+
+  let forcedMessages = null;
+
+  async function loadForcedLocale() {
+    if (!FORCE_LOCALE) return;
+    try {
+      const url = chrome.runtime.getURL(`_locales/${FORCE_LOCALE}/messages.json`);
+      const res = await fetch(url);
+      forcedMessages = await res.json();
+    } catch {
+      forcedMessages = null; // 실패 시 브라우저 언어로 폴백
+    }
+  }
+
+  // chrome.i18n과 동일한 $1, $2 치환
+  function substitute(template, subs) {
+    return template.replace(/\$(\d+)/g, (m, i) => {
+      const v = subs[Number(i) - 1];
+      return v === undefined ? m : String(v);
+    });
+  }
+
   function t(key, ...subs) {
+    const entry = forcedMessages && forcedMessages[key];
+    if (entry && typeof entry.message === 'string') {
+      return substitute(entry.message, subs);
+    }
     return chrome.i18n.getMessage(key, subs) || key;
   }
 
@@ -18,8 +47,6 @@
       el.placeholder = t(el.dataset.i18nPlaceholder);
     });
   }
-
-  applyI18n();
 
   // ── DOM References ────────────────────────────────────────────
   const els = {
@@ -372,6 +399,8 @@
 
   // ── Init ──────────────────────────────────────────────────────
   async function init() {
+    await loadForcedLocale();
+    applyI18n();
     await resolveTabId();
     await loadSettings();
     await loadLastResult();
