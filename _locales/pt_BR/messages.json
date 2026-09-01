@@ -71,6 +71,15 @@
   "minLength": {
     "message": "Caracteres mínimos"
   },
+  "maxComments": {
+    "message": "Máx. de respostas"
+  },
+  "maxAge": {
+    "message": "Idade máx. (horas)"
+  },
+  "excludeReplied": {
+    "message": "Ignorar contas já respondidas hoje"
+  },
   "keywordPlaceholder": {
     "message": "ex: dream, astrology (separados por vírgula)"
   }

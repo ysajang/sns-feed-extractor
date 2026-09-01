@@ -71,6 +71,15 @@
   "minLength": {
     "message": "Minimum tekens"
   },
+  "maxComments": {
+    "message": "Max. reacties"
+  },
+  "maxAge": {
+    "message": "Max. leeftijd (uren)"
+  },
+  "excludeReplied": {
+    "message": "Sla vandaag beantwoorde accounts over"
+  },
   "keywordPlaceholder": {
     "message": "bijv: dream, astrology (gescheiden door komma)"
   }

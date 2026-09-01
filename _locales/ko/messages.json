@@ -71,6 +71,15 @@
   "minLength": {
     "message": "최소 글자수"
   },
+  "maxComments": {
+    "message": "답글 수 상한"
+  },
+  "maxAge": {
+    "message": "경과 시간 (시간)"
+  },
+  "excludeReplied": {
+    "message": "오늘 답글 단 계정 제외"
+  },
   "keywordPlaceholder": {
     "message": "예: dream, astrology (쉼표 구분)"
   }

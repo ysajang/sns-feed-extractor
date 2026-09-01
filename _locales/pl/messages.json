@@ -71,6 +71,15 @@
   "minLength": {
     "message": "Minimalna liczba znaków"
   },
+  "maxComments": {
+    "message": "Maks. odpowiedzi"
+  },
+  "maxAge": {
+    "message": "Maks. wiek (godziny)"
+  },
+  "excludeReplied": {
+    "message": "Pomiń konta z dzisiejszą odpowiedzią"
+  },
   "keywordPlaceholder": {
     "message": "np: dream, astrology (rozdzielone przecinkiem)"
   }

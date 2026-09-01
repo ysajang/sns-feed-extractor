@@ -175,6 +175,34 @@ const XParser = (() => {
    * content script는 격리된 world에서 실행되므로
    * 실제 마우스 이벤트를 dispatch해야 React 핸들러가 반응
    */
+  /**
+   * "1.4천" / "1.4K" / "12" 같은 표기를 숫자로 변환
+   * @returns {number|null} 판별 불가 시 null
+   */
+  function parseCountText(raw) {
+    if (raw === null || raw === undefined) return null;
+    const str = String(raw).trim().replace(/,/g, '');
+    if (!str) return null;
+    const m = str.match(/^([\d.]+)\s*([천만KkMmBb])?/);
+    if (!m) return null;
+    const num = parseFloat(m[1]);
+    if (!Number.isFinite(num)) return null;
+    const unit = m[2];
+    const mult = { '천': 1e3, 'K': 1e3, 'k': 1e3, '만': 1e4, 'M': 1e6, 'm': 1e6, 'B': 1e9, 'b': 1e9 };
+    return Math.round(num * (unit ? (mult[unit] || 1) : 1));
+  }
+
+  /**
+   * 게시물 고유 URL 추출 (status 링크)
+   */
+  function extractPostUrl(article) {
+    const link = article.querySelector('a[href*="/status/"]');
+    if (!link) return null;
+    const href = link.getAttribute('href') || '';
+    const m = href.match(/^\/([^/]+)\/status\/(\d+)/);
+    return m ? `https://x.com/${m[1]}/status/${m[2]}` : null;
+  }
+
   function expandAllShowMore() {
     const buttons = document.querySelectorAll(SELECTORS.showMore);
     let clicked = 0;
@@ -318,10 +346,13 @@ const XParser = (() => {
       const handle = extractHandle(article);
       const timeEl = article.querySelector(SELECTORS.time);
       const time = formatTime(timeEl);
+      const datetime = timeEl?.getAttribute('datetime') || null; // ISO 원본 (경과 시간 필터용)
       const comments = extractCommentCount(article);
+      const commentCount = parseCountText(comments);
+      const url = extractPostUrl(article);
       const quote = extractQuote(article, { removeLinks });
 
-      results.push({ handle, time, text, comments, quote });
+      results.push({ handle, time, datetime, text, comments, commentCount, url, quote });
     }
 
     return results;
@@ -384,6 +415,8 @@ const XParser = (() => {
     isActive,
     getPlatformInfo,
     expandAllShowMore,
+    expandDuringScroll: true,
+    parseCountText,
     SELECTORS
   };
 })();

@@ -71,6 +71,15 @@
   "minLength": {
     "message": "Минимум символов"
   },
+  "maxComments": {
+    "message": "Максимум ответов"
+  },
+  "maxAge": {
+    "message": "Возраст, макс. (часы)"
+  },
+  "excludeReplied": {
+    "message": "Пропускать аккаунты с ответом сегодня"
+  },
   "keywordPlaceholder": {
     "message": "напр: dream, astrology (через запятую)"
   }

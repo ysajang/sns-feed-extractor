@@ -71,6 +71,15 @@
   "minLength": {
     "message": "Min characters"
   },
+  "maxComments": {
+    "message": "Max replies"
+  },
+  "maxAge": {
+    "message": "Max age (hours)"
+  },
+  "excludeReplied": {
+    "message": "Skip accounts replied today"
+  },
   "keywordPlaceholder": {
     "message": "e.g. dream, astrology (comma separated)"
   }

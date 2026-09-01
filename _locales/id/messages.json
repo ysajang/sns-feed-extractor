@@ -71,6 +71,15 @@
   "minLength": {
     "message": "Karakter minimum"
   },
+  "maxComments": {
+    "message": "Maks balasan"
+  },
+  "maxAge": {
+    "message": "Usia maks (jam)"
+  },
+  "excludeReplied": {
+    "message": "Lewati akun yang sudah dibalas hari ini"
+  },
   "keywordPlaceholder": {
     "message": "cth: dream, astrology (pisahkan dengan koma)"
   }

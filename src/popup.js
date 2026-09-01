@@ -68,6 +68,13 @@
     optMaxUp:       document.getElementById('opt-max-up'),
     optKeywords:    document.getElementById('opt-keywords'),
     optMinLength:   document.getElementById('opt-min-length'),
+    optMaxComments: document.getElementById('opt-max-comments'),
+    optCommentsDown:document.getElementById('opt-comments-down'),
+    optCommentsUp:  document.getElementById('opt-comments-up'),
+    optMaxAge:      document.getElementById('opt-max-age'),
+    optAgeDown:     document.getElementById('opt-age-down'),
+    optAgeUp:       document.getElementById('opt-age-up'),
+    optExcludeReplied: document.getElementById('opt-exclude-replied'),
     optMinDown:     document.getElementById('opt-min-down'),
     optMinUp:       document.getElementById('opt-min-up'),
     copyBadge:      document.getElementById('copy-badge')
@@ -76,6 +83,8 @@
   // ── 한계값 ────────────────────────────────────────────────────
   const MAX_COUNT_LIMIT = 1000;
   const MIN_LENGTH_LIMIT = 10000;
+  const MAX_COMMENTS_LIMIT = 10000;
+  const MAX_AGE_LIMIT = 720; // 시간 (30일)
   const STEP = 5; // +/- 버튼 증감 단위
 
   function clamp(val, min, max) {
@@ -126,6 +135,18 @@
         }
       }
       // 키워드는 탭별
+      const savedComments = parseInt(saved.maxComments, 10);
+      if (Number.isFinite(savedComments)) {
+        els.optMaxComments.value = String(clamp(savedComments, 0, MAX_COMMENTS_LIMIT));
+      }
+      const savedAge = parseInt(saved.maxAgeHours, 10);
+      if (Number.isFinite(savedAge)) {
+        els.optMaxAge.value = String(clamp(savedAge, 0, MAX_AGE_LIMIT));
+      }
+      if (typeof saved.excludeReplied === 'boolean') {
+        els.optExcludeReplied.checked = saved.excludeReplied;
+      }
+
       const kw = result[`sns_keywords_${currentTabId}`];
       if (kw) els.optKeywords.value = kw;
     } catch { /* default */ }
@@ -140,7 +161,10 @@
           removeLinks: els.optRemoveLinks.checked,
           includeAds: els.optIncludeAds.checked,
           maxCount: parseInt(els.optMaxCount.value, 10),
-          minLength: parseInt(els.optMinLength.value, 10) || 0
+          minLength: parseInt(els.optMinLength.value, 10) || 0,
+          maxComments: parseInt(els.optMaxComments.value, 10) || 0,
+          maxAgeHours: parseInt(els.optMaxAge.value, 10) || 0,
+          excludeReplied: els.optExcludeReplied.checked
         },
         [`sns_keywords_${currentTabId}`]: els.optKeywords.value.trim()
       });
@@ -269,8 +293,11 @@
         includePromoted: els.optIncludeAds.checked,
         maxCount: clamp(rawMax, 1, MAX_COUNT_LIMIT),
         keywords: els.optKeywords.value.trim(),
-        // 0이면 content.js에서 글자수 필터 미적용
-        minLength: clamp(rawMin, 0, MIN_LENGTH_LIMIT)
+        // 0이면 content.js에서 해당 필터 미적용
+        minLength: clamp(rawMin, 0, MIN_LENGTH_LIMIT),
+        maxComments: clamp(parseInt(els.optMaxComments.value, 10) || 0, 0, MAX_COMMENTS_LIMIT),
+        maxAgeHours: clamp(parseInt(els.optMaxAge.value, 10) || 0, 0, MAX_AGE_LIMIT),
+        excludeReplied: els.optExcludeReplied.checked
       };
       saveSettings();
       await chrome.storage.local.remove([scrollStatusKey(), scrollResultKey(), scrollStopKey()]);
@@ -388,6 +415,26 @@
   }
   els.optMinDown.addEventListener('click', (e) => { e.preventDefault(); stepMinLength(-STEP); });
   els.optMinUp.addEventListener('click', (e) => { e.preventDefault(); stepMinLength(STEP); });
+
+  // ── 답글 수 상한 / 경과 시간 / 중복 제외 ──────────────────────
+  function bindNumber(input, down, up, limit, step, fallback) {
+    input.addEventListener('change', () => {
+      let val = parseInt(input.value, 10);
+      if (isNaN(val)) val = fallback;
+      input.value = clamp(val, 0, limit);
+      saveSettings();
+    });
+    const move = (delta) => {
+      const val = parseInt(input.value, 10) || 0;
+      input.value = clamp(val + delta, 0, limit);
+      saveSettings();
+    };
+    down.addEventListener('click', (e) => { e.preventDefault(); move(-step); });
+    up.addEventListener('click', (e) => { e.preventDefault(); move(step); });
+  }
+  bindNumber(els.optMaxComments, els.optCommentsDown, els.optCommentsUp, MAX_COMMENTS_LIMIT, STEP, 15);
+  bindNumber(els.optMaxAge, els.optAgeDown, els.optAgeUp, MAX_AGE_LIMIT, 1, 24);
+  els.optExcludeReplied.addEventListener('change', saveSettings);
 
   const linkUpdates = document.getElementById('link-updates');
   if (linkUpdates) {

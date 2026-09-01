@@ -71,6 +71,15 @@
   "minLength": {
     "message": "Minimum karakter"
   },
+  "maxComments": {
+    "message": "Maks. yanıt"
+  },
+  "maxAge": {
+    "message": "Maks. yaş (saat)"
+  },
+  "excludeReplied": {
+    "message": "Bugün yanıtlanan hesapları atla"
+  },
   "keywordPlaceholder": {
     "message": "örn: dream, astrology (virgülle ayırın)"
   }

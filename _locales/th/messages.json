@@ -71,6 +71,15 @@
   "minLength": {
     "message": "จำนวนอักขระขั้นต่ำ"
   },
+  "maxComments": {
+    "message": "จำนวนตอบกลับสูงสุด"
+  },
+  "maxAge": {
+    "message": "อายุสูงสุด (ชั่วโมง)"
+  },
+  "excludeReplied": {
+    "message": "ข้ามบัญชีที่ตอบกลับไปแล้ววันนี้"
+  },
   "keywordPlaceholder": {
     "message": "เช่น: dream, astrology (คั่นด้วยเครื่องหมายจุลภาค)"
   }

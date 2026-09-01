@@ -71,6 +71,15 @@
   "minLength": {
     "message": "न्यूनतम वर्ण"
   },
+  "maxComments": {
+    "message": "अधिकतम उत्तर"
+  },
+  "maxAge": {
+    "message": "अधिकतम आयु (घंटे)"
+  },
+  "excludeReplied": {
+    "message": "आज उत्तर दिए खाते छोड़ें"
+  },
   "keywordPlaceholder": {
     "message": "उदा: dream, astrology (अल्पविराम से अलग)"
   }

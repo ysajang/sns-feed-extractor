@@ -71,6 +71,15 @@
   "minLength": {
     "message": "Số ký tự tối thiểu"
   },
+  "maxComments": {
+    "message": "Số trả lời tối đa"
+  },
+  "maxAge": {
+    "message": "Tuổi tối đa (giờ)"
+  },
+  "excludeReplied": {
+    "message": "Bỏ qua tài khoản đã trả lời hôm nay"
+  },
   "keywordPlaceholder": {
     "message": "vd: dream, astrology (phân cách bằng dấu phẩy)"
   }

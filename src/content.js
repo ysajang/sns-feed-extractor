@@ -18,6 +18,63 @@
   window[GUARD_KEY] = true;
 
   let activeTabId = null; // popup에서 전달받는 탭 ID
+
+  // ── 오늘 답글 단 계정 기록 ────────────────────────────────────
+  const REPLIED_PREFIX = 'sns_replied_';
+
+  function todayKey() {
+    const d = new Date();
+    const p = n => String(n).padStart(2, '0');
+    return `${REPLIED_PREFIX}${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+  }
+
+  async function getRepliedHandles() {
+    try {
+      const key = todayKey();
+      const r = await chrome.storage.local.get(key);
+      return Array.isArray(r[key]) ? r[key] : [];
+    } catch {
+      return [];
+    }
+  }
+
+  async function addRepliedHandle(handle) {
+    if (!handle) return;
+    try {
+      const key = todayKey();
+      const list = await getRepliedHandles();
+      const lower = handle.toLowerCase();
+      if (list.some(h => h.toLowerCase() === lower)) return;
+      list.push(handle);
+      await chrome.storage.local.set({ [key]: list });
+      // 어제 이전 기록 정리
+      const all = await chrome.storage.local.get(null);
+      const stale = Object.keys(all).filter(k => k.startsWith(REPLIED_PREFIX) && k !== key);
+      if (stale.length) await chrome.storage.local.remove(stale);
+    } catch { /* 기록 실패는 무시 */ }
+  }
+
+  /**
+   * 답글 전송을 감지해 대상 핸들을 기록한다.
+   * X의 답글 전송 버튼(tweetButton / tweetButtonInline) 클릭을 캡처 단계에서 관찰,
+   * 같은 컨테이너 안의 원글 핸들을 찾아 저장한다.
+   */
+  function watchReplySubmissions() {
+    document.addEventListener('click', (e) => {
+      const btn = e.target?.closest?.(
+        '[data-testid="tweetButton"], [data-testid="tweetButtonInline"]'
+      );
+      if (!btn) return;
+
+      // 답글 작성 맥락(모달 또는 상세 페이지) 안의 원글 article에서 핸들 추출
+      const scope = btn.closest('[role="dialog"]') || document;
+      const article = scope.querySelector('article[data-testid="tweet"]');
+      if (!article) return;
+      const link = article.querySelector('[data-testid="User-Name"] a[href^="/"]');
+      const m = link?.getAttribute('href')?.match(/^\/([^/?#]+)/);
+      if (m && m[1]) addRepliedHandle('@' + m[1]);
+    }, true);
+  }
   function scrollResultKey() { return `sns_scroll_result_${activeTabId || 'unknown'}`; }
   function scrollStatusKey() { return `sns_scroll_status_${activeTabId || 'unknown'}`; }
   function scrollStopKey() { return `sns_scroll_stop_${activeTabId || 'unknown'}`; }
@@ -75,9 +132,10 @@
    * popup과 독립적으로 실행 — 결과를 storage에 저장
    * 중지 요청 시 수집한 부분까지 결과 저장
    */
-  async function scrollAndCollect(parser, options, platformInfo, seedResults, keywordsStr) {
+  async function scrollAndCollect(parser, options, platformInfo, seedResults) {
     const maxCount = options.maxCount || 100;
-    const minLength = normalizeMinLength(options.minLength);
+    const repliedHandles = options.excludeReplied ? await getRepliedHandles() : [];
+    const filters = buildFilters(options, repliedHandles);
     const allTweets = new Map();
 
     // seed 데이터로 초기화 (즉시 추출 결과)
@@ -123,8 +181,10 @@
 
       // 플랫폼별 스크롤 거리 배수 (Quora는 답변이 길어서 크게)
       const scrollMultiplier = (platformId === 'quora') ? 3 : 1;
-      const hasKeywords = keywordsStr && keywordsStr.trim().length > 0;
-      const hasFilters = hasKeywords || minLength > 0;
+      const hasFilters = hasAnyFilter(filters);
+      // 스크롤 중 "더 보기" 펼치기 — X는 가상 스크롤로 지나간 글이 DOM에서 사라져
+      // 마지막에 한 번만 펼치면 잘린 본문을 복구할 수 없다
+      const expandWhileScrolling = !!parser.expandDuringScroll && !!parser.expandAllShowMore;
       let scrollPosition = window.scrollY; // 절대 위치 추적
 
       /**
@@ -132,12 +192,18 @@
        */
       function getMatchedCount() {
         if (!hasFilters) return allTweets.size;
-        return applyFilters([...allTweets.values()], keywordsStr, minLength).length;
+        return applyFilters([...allTweets.values()], filters).length;
       }
 
       while (getMatchedCount() < maxCount && scrollAttempts < MAX_SCROLL_ATTEMPTS) {
         // 중지 요청 확인
         if (await shouldStop()) break;
+
+        // 화면에 보이는 "더 보기"를 먼저 펼쳐 잘린 본문을 방지
+        if (expandWhileScrolling) {
+          const clicked = parser.expandAllShowMore();
+          if (clicked > 0) await sleep(300);
+        }
 
         // 현재 화면의 포스트 파싱
         const currentBatch = parser.parseFeed({
@@ -148,9 +214,13 @@
         let newCount = 0;
         for (const tweet of currentBatch) {
           const key = tweet.text.substring(0, 120);
-          if (!allTweets.has(key)) {
+          const prev = allTweets.get(key);
+          if (!prev) {
             allTweets.set(key, tweet);
             newCount++;
+          } else if ((tweet.text || '').length > (prev.text || '').length) {
+            // 펼쳐진 전체 본문으로 교체 (새 글로는 세지 않음)
+            allTweets.set(key, tweet);
           }
         }
 
@@ -213,13 +283,16 @@
         const finalBatch = parser.parseFeed({ ...options, maxCount: maxCount * (hasFilters ? 5 : 1) });
         for (const tweet of finalBatch) {
           const key = tweet.text.substring(0, 120);
-          allTweets.set(key, tweet); // 기존 키 덮어쓰기 (펼쳐진 전체 텍스트로)
+          const prev = allTweets.get(key);
+          if (!prev || (tweet.text || '').length > (prev.text || '').length) {
+            allTweets.set(key, tweet); // 펼쳐진 전체 텍스트로 교체
+          }
         }
       }
 
       // 결과 저장 (키워드 + 최소 글자수 필터 적용)
       const allResults = [...allTweets.values()];
-      const filtered = applyFilters(allResults, keywordsStr, minLength);
+      const filtered = applyFilters(allResults, filters);
       const tweets = filtered.slice(0, maxCount);
       const formatted = parser.formatOutput(tweets);
 
@@ -283,10 +356,76 @@
   }
 
   /**
-   * 키워드 + 최소 글자수 필터를 함께 적용 (AND 조건)
+   * 답글 수 상한 필터 — 답글이 max "이상"이면 제외 (경쟁 과열 글 배제)
+   * 답글 수를 판별 못한 글은 통과시킨다
    */
-  function applyFilters(tweets, keywordsStr, minLength) {
-    return filterByMinLength(filterByKeywords(tweets, keywordsStr), minLength);
+  function filterByMaxComments(tweets, maxComments) {
+    const max = parseInt(maxComments, 10);
+    if (!Number.isFinite(max) || max <= 0) return tweets;
+    return tweets.filter(t => {
+      const n = (typeof t.commentCount === 'number') ? t.commentCount : null;
+      if (n === null) return true;
+      return n < max;
+    });
+  }
+
+  /**
+   * 경과 시간 필터 — 게시 후 maxAgeHours "초과"면 제외
+   * datetime(ISO)이 없는 플랫폼(Quora 등)의 글은 통과시킨다
+   */
+  function filterByAge(tweets, maxAgeHours, now = Date.now()) {
+    const hours = parseFloat(maxAgeHours);
+    if (!Number.isFinite(hours) || hours <= 0) return tweets;
+    const limitMs = hours * 3600 * 1000;
+    return tweets.filter(t => {
+      if (!t.datetime) return true;
+      const ts = Date.parse(t.datetime);
+      if (!Number.isFinite(ts)) return true;
+      return (now - ts) <= limitMs;
+    });
+  }
+
+  /**
+   * 오늘 이미 답글을 단 계정 제외 (핸들 기준, 대소문자 무시)
+   */
+  function filterByRepliedHandles(tweets, repliedHandles) {
+    if (!repliedHandles || repliedHandles.length === 0) return tweets;
+    const set = new Set(repliedHandles.map(h => String(h).toLowerCase()));
+    return tweets.filter(t => !set.has(String(t.handle || '').toLowerCase()));
+  }
+
+  /**
+   * 모든 필터를 AND 조건으로 적용
+   * @param {Object} f - { keywords, minLength, maxComments, maxAgeHours, repliedHandles }
+   */
+  function applyFilters(tweets, f = {}) {
+    let out = filterByKeywords(tweets, f.keywords || '');
+    out = filterByMinLength(out, f.minLength);
+    out = filterByMaxComments(out, f.maxComments);
+    out = filterByAge(out, f.maxAgeHours);
+    out = filterByRepliedHandles(out, f.repliedHandles);
+    return out;
+  }
+
+  /**
+   * options에서 필터 조건만 뽑아낸다
+   */
+  function buildFilters(options, repliedHandles) {
+    return {
+      keywords: options.keywords || '',
+      minLength: normalizeMinLength(options.minLength),
+      maxComments: parseInt(options.maxComments, 10) || 0,
+      maxAgeHours: parseFloat(options.maxAgeHours) || 0,
+      repliedHandles: repliedHandles || []
+    };
+  }
+
+  /**
+   * 필터가 하나라도 켜져 있는지
+   */
+  function hasAnyFilter(f) {
+    return !!(f.keywords.trim() || f.minLength > 0 || f.maxComments > 0 ||
+              f.maxAgeHours > 0 || (f.repliedHandles && f.repliedHandles.length));
   }
 
   /**
@@ -336,13 +475,13 @@
 
       const options = request.options || {};
       const maxCount = options.maxCount || 50;
-      const keywordsStr = options.keywords || '';
-      const minLength = normalizeMinLength(options.minLength);
-      const hasFilters = (keywordsStr.trim().length > 0) || minLength > 0;
       const platformInfo = parser.getPlatformInfo();
 
       (async () => {
         try {
+          const repliedHandles = options.excludeReplied ? await getRepliedHandles() : [];
+          const filters = buildFilters(options, repliedHandles);
+          const hasFilters = hasAnyFilter(filters);
           // Show more 펼치기
           if (parser.expandAllShowMore) {
             const clicked = parser.expandAllShowMore();
@@ -354,7 +493,7 @@
             ...options,
             maxCount: maxCount * (hasFilters ? 5 : 1)
           });
-          const instantResults = applyFilters(rawResults, keywordsStr, minLength).slice(0, maxCount);
+          const instantResults = applyFilters(rawResults, filters).slice(0, maxCount);
 
           if (instantResults.length >= maxCount) {
             // 충분 -> 즉시 반환
@@ -377,7 +516,7 @@
             });
 
             await chrome.storage.local.remove(scrollStopKey());
-            scrollAndCollect(parser, options, platformInfo, instantResults, keywordsStr);
+            scrollAndCollect(parser, options, platformInfo, instantResults);
           }
         } catch (err) {
           sendResponse({
@@ -413,8 +552,12 @@
 
   // 필터 순수함수 노출 (자동 테스트용 — 런타임 동작에는 영향 없음)
   window.__SNS_EXTRACTOR_FILTERS__ = {
-    normalizeMinLength, textLength, filterByKeywords, filterByMinLength, applyFilters
+    normalizeMinLength, textLength, filterByKeywords, filterByMinLength,
+    filterByMaxComments, filterByAge, filterByRepliedHandles,
+    applyFilters, buildFilters, hasAnyFilter
   };
+
+  watchReplySubmissions();
 
   console.log('[SNS Feed Extractor] Content script loaded on', window.location.hostname);
 })();

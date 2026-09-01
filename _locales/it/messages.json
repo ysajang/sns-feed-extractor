@@ -71,6 +71,15 @@
   "minLength": {
     "message": "Caratteri minimi"
   },
+  "maxComments": {
+    "message": "Risposte max"
+  },
+  "maxAge": {
+    "message": "Età max (ore)"
+  },
+  "excludeReplied": {
+    "message": "Salta account già risposti oggi"
+  },
   "keywordPlaceholder": {
     "message": "es: dream, astrology (separati da virgola)"
   }

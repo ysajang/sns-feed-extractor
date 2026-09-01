@@ -71,6 +71,15 @@
   "minLength": {
     "message": "最小文字数"
   },
+  "maxComments": {
+    "message": "返信数の上限"
+  },
+  "maxAge": {
+    "message": "経過時間 (時間)"
+  },
+  "excludeReplied": {
+    "message": "本日返信した相手を除外"
+  },
   "keywordPlaceholder": {
     "message": "例: dream, astrology（カンマ区切り）"
   }

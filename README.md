@@ -50,6 +50,9 @@ Another post body text
 | Max count | 50 | How many posts to collect (1–1000, ±5 per step) |
 | Keyword filter | — | Comma-separated, OR match, case-insensitive |
 | Min characters | 0 | Keep posts whose body is **at least** N characters. `0` disables it |
+| Max replies | 15 | Drop posts with **at least** N replies. `0` disables it |
+| Max age | 24h | Drop posts older than N hours. `0` disables it |
+| Skip replied accounts | ON | Drop accounts you already replied to today |
 | Include ads | OFF | Include promoted/sponsored posts |
 
 Notes:
@@ -60,6 +63,11 @@ Notes:
   a server-side rate limit, and Threads/Reddit usually reach the end of the feed
   first. Collection stops cleanly and returns whatever was gathered.
 - Large targets take minutes. The popup can be closed while it runs.
+- **Max replies / Max age** need data the platform exposes. Posts where the
+  reply count or timestamp can't be read are kept rather than dropped.
+- **Skip replied accounts** is recorded automatically: the extension watches for
+  reply submissions on X and stores the target handle for the current day.
+  The list resets daily.
 
 ## Architecture
 
@@ -93,6 +101,14 @@ sns-feed-extractor/
 - All extraction runs locally — no data sent to external servers
 
 ## Changelog
+
+### 1.13.0
+- Reply-count filter, post-age filter, and same-day replied-account exclusion
+- "Show more" is now expanded during scroll collection, so long posts are no
+  longer truncated when they scroll out of the virtualized feed
+
+### 1.12.0
+- Popup UI is fixed to English regardless of browser language
 
 ### 1.11.x
 - Minimum character length filter (always visible, `0` = off)

@@ -47,6 +47,27 @@
           <button id="opt-min-up" class="stepper-btn" type="button">+</button>
         </div>
       </div>
+      <div class="setting-row">
+        <span class="setting-label" data-i18n="maxComments"></span>
+        <div class="stepper">
+          <button id="opt-comments-down" class="stepper-btn" type="button">−</button>
+          <input type="number" id="opt-max-comments" min="0" max="10000" value="15" step="5">
+          <button id="opt-comments-up" class="stepper-btn" type="button">+</button>
+        </div>
+      </div>
+      <div class="setting-row">
+        <span class="setting-label" data-i18n="maxAge"></span>
+        <div class="stepper">
+          <button id="opt-age-down" class="stepper-btn" type="button">−</button>
+          <input type="number" id="opt-max-age" min="0" max="720" value="24" step="1">
+          <button id="opt-age-up" class="stepper-btn" type="button">+</button>
+        </div>
+      </div>
+      <label class="setting-row">
+        <span class="setting-label" data-i18n="excludeReplied"></span>
+        <input type="checkbox" id="opt-exclude-replied" checked>
+        <span class="toggle"></span>
+      </label>
       <label class="setting-row">
         <span class="setting-label" data-i18n="includeAds"></span>
         <input type="checkbox" id="opt-include-ads">

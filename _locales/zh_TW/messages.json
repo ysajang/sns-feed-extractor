@@ -71,6 +71,15 @@
   "minLength": {
     "message": "最小字數"
   },
+  "maxComments": {
+    "message": "回覆數上限"
+  },
+  "maxAge": {
+    "message": "發布時長 (小時)"
+  },
+  "excludeReplied": {
+    "message": "排除今天已回覆的帳號"
+  },
   "keywordPlaceholder": {
     "message": "例：dream, astrology（逗號分隔）"
   }
