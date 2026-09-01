@@ -5,6 +5,11 @@
   box-sizing: border-box;
 }
 
+html {
+  height: 600px;
+  overflow: hidden;
+}
+
 body {
   width: 380px;
   /* Chrome 팝업 최대 높이는 600px — 그 높이를 전부 사용하고
@@ -20,10 +25,10 @@ body {
 
 .container {
   height: 100%;
-  padding: 14px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   overflow: hidden;
 }
 
@@ -78,7 +83,9 @@ body {
 
 /* ── Settings ──────────────────────────────────────────────── */
 .settings {
-  flex: 0 0 auto;
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -92,7 +99,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 14px;
+  padding: 7px 12px;
   cursor: pointer;
   transition: background 0.15s;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
@@ -259,7 +266,7 @@ input[type="checkbox"]:checked + .toggle::after {
 
 .btn-primary {
   flex: 1;
-  padding: 11px 16px;
+  padding: 10px 16px;
   font-size: 13px;
   background: #1d9bf0;
   color: #ffffff;
@@ -328,7 +335,7 @@ input[type="checkbox"]:checked + .toggle::after {
 .result-text {
   width: 100%;
   flex: 1 1 auto;
-  min-height: 120px;
+  min-height: 100px;
   padding: 10px 12px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.06);
