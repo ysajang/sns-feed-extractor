@@ -77,6 +77,9 @@
   "maxAge": {
     "message": "Ancienneté max (heures)"
   },
+  "aiFilter": {
+    "message": "Filtre textes IA (0=off)"
+  },
   "excludeReplied": {
     "message": "Ignorer les comptes déjà répondus"
   },

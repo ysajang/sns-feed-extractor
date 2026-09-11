@@ -77,6 +77,9 @@
   "maxAge": {
     "message": "Maks. yaş (saat)"
   },
+  "aiFilter": {
+    "message": "AI metin filtresi (0=kapalı)"
+  },
   "excludeReplied": {
     "message": "Bugün yanıtlanan hesapları atla"
   },

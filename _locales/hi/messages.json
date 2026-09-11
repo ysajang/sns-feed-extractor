@@ -77,6 +77,9 @@
   "maxAge": {
     "message": "अधिकतम आयु (घंटे)"
   },
+  "aiFilter": {
+    "message": "AI-लिखित फ़िल्टर (0=बंद)"
+  },
   "excludeReplied": {
     "message": "आज उत्तर दिए खाते छोड़ें"
   },

@@ -77,6 +77,9 @@
   "maxAge": {
     "message": "发布时长 (小时)"
   },
+  "aiFilter": {
+    "message": "过滤 AI 生成内容 (0=关闭)"
+  },
   "excludeReplied": {
     "message": "排除今天已回复的账号"
   },

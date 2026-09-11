@@ -77,6 +77,9 @@
   "maxAge": {
     "message": "Tuổi tối đa (giờ)"
   },
+  "aiFilter": {
+    "message": "Lọc văn bản AI (0=tắt)"
+  },
   "excludeReplied": {
     "message": "Bỏ qua tài khoản đã trả lời hôm nay"
   },

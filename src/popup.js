@@ -74,6 +74,9 @@
     optMaxAge:      document.getElementById('opt-max-age'),
     optAgeDown:     document.getElementById('opt-age-down'),
     optAgeUp:       document.getElementById('opt-age-up'),
+    optAiThreshold: document.getElementById('opt-ai-threshold'),
+    optAiDown:      document.getElementById('opt-ai-down'),
+    optAiUp:        document.getElementById('opt-ai-up'),
     optExcludeReplied: document.getElementById('opt-exclude-replied'),
     optMinDown:     document.getElementById('opt-min-down'),
     optMinUp:       document.getElementById('opt-min-up'),
@@ -85,6 +88,7 @@
   const MIN_LENGTH_LIMIT = 10000;
   const MAX_COMMENTS_LIMIT = 10000;
   const MAX_AGE_LIMIT = 720; // 시간 (30일)
+  const AI_THRESHOLD_LIMIT = 10; // AI 작성 신호 점수 상한 (0이면 필터 끔)
   const STEP = 5; // +/- 버튼 증감 단위
 
   function clamp(val, min, max) {
@@ -143,6 +147,10 @@
       if (Number.isFinite(savedAge)) {
         els.optMaxAge.value = String(clamp(savedAge, 0, MAX_AGE_LIMIT));
       }
+      const savedAi = parseInt(saved.aiThreshold, 10);
+      if (Number.isFinite(savedAi)) {
+        els.optAiThreshold.value = String(clamp(savedAi, 0, AI_THRESHOLD_LIMIT));
+      }
       if (typeof saved.excludeReplied === 'boolean') {
         els.optExcludeReplied.checked = saved.excludeReplied;
       }
@@ -164,6 +172,7 @@
           minLength: parseInt(els.optMinLength.value, 10) || 0,
           maxComments: parseInt(els.optMaxComments.value, 10) || 0,
           maxAgeHours: parseInt(els.optMaxAge.value, 10) || 0,
+          aiThreshold: parseInt(els.optAiThreshold.value, 10) || 0,
           excludeReplied: els.optExcludeReplied.checked
         },
         [`sns_keywords_${currentTabId}`]: els.optKeywords.value.trim()
@@ -297,6 +306,7 @@
         minLength: clamp(rawMin, 0, MIN_LENGTH_LIMIT),
         maxComments: clamp(parseInt(els.optMaxComments.value, 10) || 0, 0, MAX_COMMENTS_LIMIT),
         maxAgeHours: clamp(parseInt(els.optMaxAge.value, 10) || 0, 0, MAX_AGE_LIMIT),
+        aiThreshold: clamp(parseInt(els.optAiThreshold.value, 10) || 0, 0, AI_THRESHOLD_LIMIT),
         excludeReplied: els.optExcludeReplied.checked
       };
       saveSettings();
@@ -434,6 +444,7 @@
   }
   bindNumber(els.optMaxComments, els.optCommentsDown, els.optCommentsUp, MAX_COMMENTS_LIMIT, STEP, 15);
   bindNumber(els.optMaxAge, els.optAgeDown, els.optAgeUp, MAX_AGE_LIMIT, 1, 24);
+  bindNumber(els.optAiThreshold, els.optAiDown, els.optAiUp, AI_THRESHOLD_LIMIT, 1, 3);
   els.optExcludeReplied.addEventListener('change', saveSettings);
 
   const linkUpdates = document.getElementById('link-updates');

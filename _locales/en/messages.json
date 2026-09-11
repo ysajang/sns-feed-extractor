@@ -77,6 +77,9 @@
   "maxAge": {
     "message": "Max age (hours)"
   },
+  "aiFilter": {
+    "message": "AI-written filter (0=off)"
+  },
   "excludeReplied": {
     "message": "Skip accounts replied today"
   },

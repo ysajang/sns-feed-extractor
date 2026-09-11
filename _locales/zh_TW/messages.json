@@ -77,6 +77,9 @@
   "maxAge": {
     "message": "發布時長 (小時)"
   },
+  "aiFilter": {
+    "message": "過濾 AI 生成內容 (0=關閉)"
+  },
   "excludeReplied": {
     "message": "排除今天已回覆的帳號"
   },

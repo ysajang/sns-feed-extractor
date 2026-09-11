@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "__MSG_extName__",
   "default_locale": "en",
-  "version": "1.14.0",
+  "version": "1.15.0",
   "description": "__MSG_extDesc__",
   "permissions": ["activeTab", "clipboardWrite", "storage"],
   "background": {
@@ -39,6 +39,7 @@
         "https://new.reddit.com/*"
       ],
       "js": [
+        "src/ai-score.js",
         "src/platforms/x.js",
         "src/platforms/threads.js",
         "src/platforms/quora.js",

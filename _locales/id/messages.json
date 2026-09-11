@@ -77,6 +77,9 @@
   "maxAge": {
     "message": "Usia maks (jam)"
   },
+  "aiFilter": {
+    "message": "Filter teks AI (0=mati)"
+  },
   "excludeReplied": {
     "message": "Lewati akun yang sudah dibalas hari ini"
   },

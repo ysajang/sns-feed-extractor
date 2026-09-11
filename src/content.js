@@ -395,8 +395,21 @@
   }
 
   /**
+   * AI 작성 신호 필터 — 점수가 threshold "이상"이면 제외
+   * 본문만 채점한다. 인용문은 남의 글이라 작성자 판별 근거가 아니다.
+   * threshold가 0이거나 채점 모듈이 없으면 전부 통과시킨다
+   */
+  function filterByAiScore(tweets, threshold) {
+    const limit = parseInt(threshold, 10);
+    if (!Number.isFinite(limit) || limit <= 0) return tweets;
+    const scorer = window.__SNS_AI_SCORE__;
+    if (!scorer || typeof scorer.scoreText !== 'function') return tweets;
+    return tweets.filter(t => scorer.scoreText(t.text).score < limit);
+  }
+
+  /**
    * 모든 필터를 AND 조건으로 적용
-   * @param {Object} f - { keywords, minLength, maxComments, maxAgeHours, repliedHandles }
+   * @param {Object} f - { keywords, minLength, maxComments, maxAgeHours, repliedHandles, aiThreshold }
    */
   function applyFilters(tweets, f = {}) {
     let out = filterByKeywords(tweets, f.keywords || '');
@@ -404,6 +417,7 @@
     out = filterByMaxComments(out, f.maxComments);
     out = filterByAge(out, f.maxAgeHours);
     out = filterByRepliedHandles(out, f.repliedHandles);
+    out = filterByAiScore(out, f.aiThreshold);
     return out;
   }
 
@@ -416,7 +430,8 @@
       minLength: normalizeMinLength(options.minLength),
       maxComments: parseInt(options.maxComments, 10) || 0,
       maxAgeHours: parseFloat(options.maxAgeHours) || 0,
-      repliedHandles: repliedHandles || []
+      repliedHandles: repliedHandles || [],
+      aiThreshold: parseInt(options.aiThreshold, 10) || 0
     };
   }
 
@@ -425,7 +440,8 @@
    */
   function hasAnyFilter(f) {
     return !!(f.keywords.trim() || f.minLength > 0 || f.maxComments > 0 ||
-              f.maxAgeHours > 0 || (f.repliedHandles && f.repliedHandles.length));
+              f.maxAgeHours > 0 || (f.repliedHandles && f.repliedHandles.length) ||
+              f.aiThreshold > 0);
   }
 
   /**
@@ -553,7 +569,7 @@
   // 필터 순수함수 노출 (자동 테스트용 — 런타임 동작에는 영향 없음)
   window.__SNS_EXTRACTOR_FILTERS__ = {
     normalizeMinLength, textLength, filterByKeywords, filterByMinLength,
-    filterByMaxComments, filterByAge, filterByRepliedHandles,
+    filterByMaxComments, filterByAge, filterByRepliedHandles, filterByAiScore,
     applyFilters, buildFilters, hasAnyFilter
   };
 

@@ -77,6 +77,9 @@
   "maxAge": {
     "message": "경과 시간 (시간)"
   },
+  "aiFilter": {
+    "message": "AI 작성 글 제외 (0=끔)"
+  },
   "excludeReplied": {
     "message": "오늘 답글 단 계정 제외"
   },

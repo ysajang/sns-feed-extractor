@@ -52,6 +52,7 @@ Another post body text
 | Min characters | 0 | Keep posts whose body is **at least** N characters. `0` disables it |
 | Max replies | 15 | Drop posts with **at least** N replies. `0` disables it |
 | Max age | 24h | Drop posts older than N hours. `0` disables it |
+| AI-written filter | 3 | Drop posts whose AI-writing signal score is **at least** N. `0` disables it |
 | Skip replied accounts | ON | Drop accounts you already replied to today |
 | Include ads | OFF | Include promoted/sponsored posts |
 
@@ -68,6 +69,12 @@ Notes:
 - **Skip replied accounts** is recorded automatically: the extension watches for
   reply submissions on X and stores the target handle for the current day.
   The list resets daily.
+- **AI-written filter** scores surface patterns common in generated posts:
+  all-caps section headings, stacked arrow lines, bullet walls with no
+  first-person voice, hashtag spam, and one-line paragraph walls. Signals are
+  summed, so no single pattern drops a post on its own. Only the body is
+  scored; quoted text belongs to someone else. Lower the number to filter more
+  aggressively.
 
 ## Architecture
 
@@ -80,6 +87,7 @@ sns-feed-extractor/
 │   ├── icon48.png
 │   └── icon128.png
 └── src/
+    ├── ai-score.js
     ├── background.js
     ├── content.js
     ├── popup.html
@@ -101,6 +109,9 @@ sns-feed-extractor/
 - All extraction runs locally — no data sent to external servers
 
 ## Changelog
+
+### 1.15.0
+- AI-written post filter: signal-scored exclusion of generated posts (`0` = off)
 
 ### 1.13.0
 - Reply-count filter, post-age filter, and same-day replied-account exclusion

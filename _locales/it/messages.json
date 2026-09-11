@@ -77,6 +77,9 @@
   "maxAge": {
     "message": "Età max (ore)"
   },
+  "aiFilter": {
+    "message": "Filtro testi IA (0=off)"
+  },
   "excludeReplied": {
     "message": "Salta account già risposti oggi"
   },

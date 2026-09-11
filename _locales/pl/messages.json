@@ -77,6 +77,9 @@
   "maxAge": {
     "message": "Maks. wiek (godziny)"
   },
+  "aiFilter": {
+    "message": "Filtr tekstów AI (0=wył)"
+  },
   "excludeReplied": {
     "message": "Pomiń konta z dzisiejszą odpowiedzią"
   },
